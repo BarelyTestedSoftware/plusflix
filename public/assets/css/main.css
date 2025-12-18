@@ -1,0 +1,141 @@
+/* CSS Reset - http://meyerweb.com/eric/tools/css/reset/ v2.0 */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* CSS Variables */
+:root {
+    --mobile-breakpoint: 1024px;
+    --base-font-size: 16px;
+    --background-color: #0B0A14;
+    --background-color-light: #12121F;
+    --font-color: #fefefe;
+    --font-color-dark: #4B5563;
+    --line-color: #4B5563;
+    --accent-color-1: #8563F5;
+    --accent-color-2: #3085F5;
+}
+
+/* Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap');
+
+/* Layout */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 95vh;
+    font-family: "Poppins", sans-serif;
+    font-size: var(--base-font-size);
+    line-height: 1.5;
+    color: var(--font-color);
+}
+
+body main,
+body nav,
+body footer {
+    width: 100%;
+    padding: 1rem;
+}
+
+body nav {
+    margin-top: 0;
+}
+
+body main {
+    flex-grow: 1;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+}
+
+a {
+    text-decoration: none;
+    color: var(--font-color);
+}
+
+a:hover {
+    color: var(--accent-color-1);
+}
+
+ul.action-list {
+    margin-top: 1em;
+    margin-bottom: 2em;
+}
+
+ul.action-list li {
+    display: inline-block;
+    margin-right: 1em;
+}
+
+/* Nav */
+nav a {
+    text-transform: uppercase;
+}
+
+/* Footer */
+footer {
+    font-size: 0.8rem;
+}
+
+footer::before {
+    content: "";
+    display: block;
+    width: 100%;
+    border-top: 1px solid var(--line-color);
+    margin: 0 auto 10px auto;
+}

@@ -1,0 +1,57 @@
+/* SelectWithSearch Component */
+.select-with-search {
+    position: relative;
+    width: 200px;
+}
+
+.select-with-search__input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--line-color);
+    border-radius: 4px;
+    font-size: 14px;
+    background: var(--background-color-light);
+    color: var(--font-color);
+}
+
+.select-with-search__input:focus {
+    outline: none;
+    border-color: var(--accent-color-1);
+}
+
+.select-with-search__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    background: var(--background-color-light);
+    border: 1px solid var(--line-color);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+}
+
+.select-with-search__dropdown[hidden] {
+    display: none;
+}
+
+.select-with-search__option {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+.select-with-search__option:hover,
+.select-with-search__option--active {
+    background: var(--accent-color-1);
+    color: var(--background-color);
+}
+
+.select-with-search__option[hidden] {
+    display: none;
+}
