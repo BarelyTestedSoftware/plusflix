@@ -27,7 +27,7 @@ function render(string $template, array $params = []): string
     }
     
     // Check for CSS file in same directory
-    $cssPath = dirname($templatePath) . DIRECTORY_SEPARATOR . 'style.css';
+    $cssPath = dirname($templatePath) . DIRECTORY_SEPARATOR . 'home.css';
     if (file_exists($cssPath)) {
         collectStyle($cssPath);
     }
@@ -55,7 +55,7 @@ function component(string $name, array $params = []): void
     }
     
     // Check for CSS file in same directory
-    $cssPath = dirname($componentPath) . DIRECTORY_SEPARATOR . 'style.css';
+    $cssPath = dirname($componentPath) . DIRECTORY_SEPARATOR . 'home.css';
     if (file_exists($cssPath)) {
         collectStyle($cssPath);
     }
@@ -83,7 +83,6 @@ function getCollectedStyles(): string
     global $__collected_styles;
     $output = '';
     foreach ($__collected_styles as $cssPath) {
-        $output .= '<style>' . file_get_contents($cssPath) . '</style>' . "\n";
     }
     return $output;
 }
