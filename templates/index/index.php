@@ -4,8 +4,6 @@
  */
 
 
-collectStyle('templates/index/home.css');
-
 $heroMovie = [
         'title' => 'Oppenheimer',
         'year' => 2023,
@@ -45,12 +43,12 @@ $categories = [
         </p>
 
         <div class="hero-actions">
-            <button class="btn-lg btn-primary-soft">
+            <a href="/movie" class="btn-lg btn-primary-soft" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
                 <span style="font-size: 18px;">▶</span> Zobacz szczegóły
-            </button>
-            <button class="btn-lg" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
+            </a>
+            <a href="/rate" class="btn btn-ghost btn-lg" style="text-decoration: none;">
                 Dodaj ocenę
-            </button>
+            </a>
         </div>
 
         <div class="slider-dots" id="slider-dots">
