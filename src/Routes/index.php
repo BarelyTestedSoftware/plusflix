@@ -10,4 +10,5 @@ return [
     'params' => ['router' => $router, 'hello' => "Witamy w Plusflix!"],
     'title' => 'Plusflix',
     'bodyClass' => 'index',
+
 ];

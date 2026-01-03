@@ -54,12 +54,7 @@ function component(string $name, array $params = []): void
         throw new \App\Exception\NotFoundException("Component '$name' nie istnieje");
     }
     
-    // Check for CSS file in same directory
-    $cssPath = dirname($componentPath) . DIRECTORY_SEPARATOR . 'home.css';
-    if (file_exists($cssPath)) {
-        collectStyle($cssPath);
-    }
-    
+
     require $componentPath;
     echo ob_get_clean();
 }
