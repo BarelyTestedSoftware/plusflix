@@ -67,8 +67,8 @@ custom-php-framework/
 │   ├── Exception/        # Własne wyjątki
 │   ├── Routes/           # Definicje ścieżek (file-based routing)
 │   └── helpers.php       # Funkcje pomocnicze (render, component)
-└── templates/            # Szablony HTML/PHP
-    └── components/       # Reużywalne komponenty UI
+├── templates/            # Szablony HTML/PHP
+└── components/           # Reużywalne komponenty UI
 ```
 
 ---

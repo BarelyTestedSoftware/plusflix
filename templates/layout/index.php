@@ -32,6 +32,5 @@
 <main><?= $params['main'] ?></main>
 
 <footer>&copy;<?= date('Y') ?> Custom Framework</footer>
-<script src="/assets/js/app.js" defer></script>
 </body>
 </html>
