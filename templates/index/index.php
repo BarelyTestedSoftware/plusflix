@@ -3,6 +3,50 @@
  * Strona główna - Widok
  */
 
+// TODO: Zamiast tego będą dane z bazy
+$shows = [];
+for ($i = 1; $i <= 6; $i++) {
+    $show = new \App\Model\Show();
+    $show->id = $i;
+    $show->title = "Serial " . $i;
+    $show->description = "Opis serialu " . $i;
+    $show->type = 1;
+    $show->productionDate = "202" . ($i % 3) . "-01-15";
+    $show->numberOfEpisodes = 10 + ($i * 2);
+    
+    $coverImage = new \App\Model\Media();
+    $coverImage->id = $i;
+    $coverImage->src = "https://m.media-amazon.com/images/M/MV5BMDBmYTZjNjUtN2M1MS00MTQ2LTk2ODgtNzc2M2QyZGE5NTVjXkEyXkFqcGdeQXVyNzAwMjU2MTY@._V1_.jpg";
+    $coverImage->alt = "Cover Serial " . $i;
+    $show->coverImage = $coverImage;
+    
+    $backgroundImage = new \App\Model\Media();
+    $backgroundImage->id = 100 + $i;
+    $backgroundImage->src = "https://via.placeholder.com/1920x1080?text=Background+" . $i;
+    $backgroundImage->alt = "Background Serial " . $i;
+    $show->backgroundImage = $backgroundImage;
+    
+    $director = new \App\Model\Person();
+    $director->id = $i;
+    $director->name = "Reżyser " . $i;
+    $director->type = 1;
+    $show->director = $director;
+    
+    $show->actors = [];
+    $show->streamings = [
+        (new \App\Model\Streaming()),
+        (new \App\Model\Streaming()),
+    ];
+    $show->categories = [];
+    
+    $rating = new \App\Model\Rating();
+    $rating->id = $i;
+    $rating->value = 80 + ($i * 2);
+    $rating->show = $show;
+    $show->ratings = [$rating];
+    
+    $shows[] = $show;
+}
 
 $heroMovie = [
         'title' => 'Oppenheimer',
@@ -21,7 +65,7 @@ $categories = [
 ];
 ?>
 
-<div class="hero-banner" id="hero-banner" style="background-image: url(""); background-position: center top;">    <div class="hero-overlay"></div>
+<div class="hero-banner" id="hero-banner" style="background-image: url(''); background-position: center top;">    <div class="hero-overlay"></div>
     <div class="hero-content">
 
         <div class="hero-tag" id="hero-category">Film</div>
@@ -58,42 +102,6 @@ $categories = [
 
 <div class="content-panel">
     <div class="lists-wrapper">
-
-        <div class="movie-list-section">
-            <div class="category-title">NAJWYŻEJ OCENIANE:</div>
-            <div class="movies-grid">
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-            </div>
-        </div>
-
-        <div class="movie-list-section">
-            <div class="category-title">ULUBIONE:</div>
-            <div class="movies-grid">
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-            </div>
-        </div>
-
-        <div class="movie-list-section">
-            <div class="category-title">KOMEDIE:</div>
-            <div class="movies-grid">
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-            </div>
-        </div>
-
+        <?php component('movie-list', ['shows' => $shows]) ?>
     </div>
 </div>

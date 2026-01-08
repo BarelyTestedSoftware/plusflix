@@ -54,6 +54,11 @@ function component(string $name, array $params = []): void
         throw new \App\Exception\NotFoundException("Component '$name' nie istnieje");
     }
     
+    // Check for CSS file in same directory
+    $cssPath = dirname($componentPath) . DIRECTORY_SEPARATOR . 'style.css';
+    if (file_exists($cssPath)) {
+        collectStyle($cssPath);
+    }
 
     require $componentPath;
     echo ob_get_clean();
@@ -78,6 +83,10 @@ function getCollectedStyles(): string
     global $__collected_styles;
     $output = '';
     foreach ($__collected_styles as $cssPath) {
+        if (file_exists($cssPath)) {
+            $css = file_get_contents($cssPath);
+            $output .= "<style>\n" . $css . "\n</style>\n";
+        }
     }
     return $output;
 }

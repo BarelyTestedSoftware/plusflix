@@ -1,0 +1,15 @@
+.movies-grid {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    overflow: auto;
+}
+
+.category-title {
+    font-size: 13px;
+    color: #ccc;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
