@@ -1,0 +1,192 @@
+/* PODGLĄD FILMU */
+
+.movie-details-wrapper {
+    padding: 60px 0;
+    width: 100%;
+}
+
+.movie-details-grid {
+    display: flex;
+    gap: 50px;
+    align-items: flex-start;
+}
+
+.movie-poster-col {
+    flex: 0 0 350px;
+    position: relative;
+}
+
+.poster-image {
+    width: 100%;
+    border-radius: var(--radius-m);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    aspect-ratio: 2/3;
+    object-fit: cover;
+}
+
+/* PRAWA KOLUMNA: Treść */
+.movie-info-col {
+    flex: 1;
+    padding-top: 10px;
+}
+
+.badge-category {
+    display: inline-block;
+    background-color: rgba(108, 93, 211, 0.15);
+    color: var(--primary);
+    padding: 6px 14px;
+    border-radius: var(--radius-s);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+}
+
+.movie-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    line-height: 1.1;
+    background: linear-gradient(to right, #fff, #b0b0b0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.movie-meta {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: #ccc;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rating-stars {
+    color: var(--warning);
+    letter-spacing: 2px;
+}
+
+.rating-score {
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.rating-score span {
+    font-weight: normal;
+    color: var(--text-muted);
+}
+
+.platforms-section {
+    margin-bottom: 35px;
+}
+
+.section-label {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    display: block;
+}
+
+.platforms-list {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.platform-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-s);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--line-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.platform-icon:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary);
+}
+
+.movie-description {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #d1d1d6;
+    margin-bottom: 40px;
+    max-width: 800px;
+}
+
+.credits-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+    padding-top: 30px;
+    border-top: 1px solid var(--line-color);
+}
+
+.credit-name {
+    color: var(--text-main);
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.movie-actions-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.movie-actions-row .badge-category {
+    margin-bottom: 0;
+}
+
+.section-heading-large {
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 15px;
+    display: block;
+    font-weight: 600;
+}
+
+.brand-netflix { color: #E50914; }
+.brand-hbo { color: #ffffff; }
+.brand-apple { color: #ffffff; }
+.brand-prime { color: #00A8E1; }
+
+@media (max-width: 1024px) {
+    .movie-details-grid {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .movie-poster-col {
+        width: 250px;
+        flex: none;
+    }
+
+    .movie-meta {
+        justify-content: center;
+    }
+
+    .platforms-list {
+        justify-content: center;
+    }
+
+    .credits-grid {
+        text-align: left;
+    }
+}

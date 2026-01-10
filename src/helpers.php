@@ -27,7 +27,7 @@ function render(string $template, array $params = []): string
     }
     
     // Check for CSS file in same directory
-    $cssPath = dirname($templatePath) . DIRECTORY_SEPARATOR . 'home.css';
+    $cssPath = dirname($templatePath) . DIRECTORY_SEPARATOR . 'style.css';
     if (file_exists($cssPath)) {
         collectStyle($cssPath);
     }
@@ -103,10 +103,13 @@ function clearCollectedStyles(): void
 /**
  * Escape HTML - zabezpieczenie przed XSS
  * 
- * @param string|null $value Wartość do escape'owania
+ * @param mixed $value Wartość do escape'owania
  * @return string
  */
-function e(?string $value): string
+function e($value): string
 {
-    return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
+    if ($value === null || $value === '') {
+        return '';
+    }
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }

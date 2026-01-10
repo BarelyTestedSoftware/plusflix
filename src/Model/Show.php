@@ -19,6 +19,7 @@ class Show
     public array $streamings;
     /** @var Category[] */
     public array $categories;
-    /** @var Rating[] */
-    public array $ratings;
+    // Average rating from reviews
+    public float $rating;
+    public int $numberOfRatings;
 }

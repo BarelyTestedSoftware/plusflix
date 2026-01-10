@@ -10,8 +10,8 @@ $show = $params['show'];
     <div class="movie-info">
         <div class="movie-rating">
             <span class="star">★</span>
-            <span class="rating-value"><?= number_format($show->ratings[0]->value / 20, 1); ?></span>
-            <span class="rating-count">(<?= count($show->ratings); ?>)</span>
+            <span class="rating-value"><?= $show->rating; ?></span>
+            <span class="rating-count">(<?= $show->numberOfRatings; ?>)</span>
         </div>
         <h3 class="movie-title"><?= e($show->title); ?></h3>
 
@@ -22,3 +22,11 @@ $show = $params['show'];
         </div>
     </div>
 </div>
+
+<script>
+    document.querySelectorAll('.movie').forEach(movie => {
+        movie.addEventListener('click', () => {
+            window.location.href = '/show?id=<?= $show->id; ?>';
+        });
+    });
+</script>
