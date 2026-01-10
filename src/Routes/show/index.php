@@ -1,50 +1,4 @@
 <?php
-/**
- * Route: /
- * Strona główna
- */
-
-// TODO: Zamiast tego będą dane z bazy
-$shows = [];
-for ($i = 1; $i <= 6; $i++) {
-    $show = new \App\Model\Show();
-    $show->id = $i;
-    $show->title = "Serial " . $i;
-    $show->description = "Opis serialu " . $i;
-    $show->type = 1;
-    $show->productionDate = "202" . ($i % 3) . "-01-15";
-    $show->numberOfEpisodes = 10 + ($i * 2);
-    
-    $coverImage = new \App\Model\Media();
-    $coverImage->id = $i;
-    $coverImage->src = "https://m.media-amazon.com/images/M/MV5BMDBmYTZjNjUtN2M1MS00MTQ2LTk2ODgtNzc2M2QyZGE5NTVjXkEyXkFqcGdeQXVyNzAwMjU2MTY@._V1_.jpg";
-    $coverImage->alt = "Cover Serial " . $i;
-    $show->coverImage = $coverImage;
-    
-    $backgroundImage = new \App\Model\Media();
-    $backgroundImage->id = 100 + $i;
-    $backgroundImage->src = "https://www.hindustantimes.com/ht-img/img/2023/07/22/550x309/oppenheimer_1690033428720_1690033428887.jpg";
-    $backgroundImage->alt = "Background Serial " . $i;
-    $show->backgroundImage = $backgroundImage;
-    
-    $director = new \App\Model\Person();
-    $director->id = $i;
-    $director->name = "Reżyser " . $i;
-    $director->type = 1;
-    $show->director = $director;
-    
-    $show->actors = [];
-    $show->streamings = [
-        (new \App\Model\Streaming()),
-        (new \App\Model\Streaming()),
-    ];
-    $show->categories = [];
-    
-    $show->rating = rand(40, 50) / 10;
-    $show->numberOfRatings = rand(50, 500);
-    
-    $shows[] = $show;
-}
 
 // Przykładowe dane pokazu do widoku „show” 
 // TODO: W przyszłości pobierać z bazy danych na podstawie ID z URL
@@ -125,9 +79,12 @@ $show->rating = 4.0;
 $show->numberOfRatings = 1287;
 
 return [
-    'template' => 'index',
-    'params' => ['router' => $router, 'shows' => $shows, 'highlightedShow' => $show],
-    'title' => 'Plusflix',
-    'bodyClass' => 'index',
-
+    'template' => 'show',
+    'params' => [
+        'router' => $router,
+        'show' => $show,
+    ],
+    'title' => 'Szczegóły: Oppenheimer',
 ];
+
+
