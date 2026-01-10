@@ -6,7 +6,7 @@ $show = $params['show'];
 ?>
 
 <div class="movie" style="background-image: url('<?php echo $show->coverImage->src; ?>');">
-    <button class="movie-like">♡</button>
+    <button class="movie-like" aria-label="Dodaj do ulubionych">♡</button>
     <div class="movie-info">
         <div class="movie-rating">
             <span class="star">★</span>
