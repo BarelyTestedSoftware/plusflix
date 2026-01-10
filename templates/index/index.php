@@ -20,7 +20,7 @@ $categories = [
         'KOMEDIE'
 ];
 ?>
-<?php
+<?php ?>
 
 <div class="hero-banner" id="hero-banner" style="background-image: url(""); background-position: center top;">    <div class="hero-overlay"></div>
     <div class="hero-content">
