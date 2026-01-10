@@ -10,8 +10,8 @@ $show = $params['show'];
     <div class="movie-info">
         <div class="movie-rating">
             <span class="star">★</span>
-            <span class="rating-value"><?= $show->rating; ?></span>
-            <span class="rating-count">(<?= $show->numberOfRatings; ?>)</span>
+            <span class="rating-value"><?= e(number_format($show->rating, 1)); ?></span>
+            <span class="rating-count">(<?= e($show->numberOfRatings); ?>)</span>
         </div>
         <h3 class="movie-title"><?= e($show->title); ?></h3>
 
