@@ -7,7 +7,7 @@ class Show
     public int $id;
     public string $title;
     public string $description;
-    public int $type;
+    public int $type; // 1 - movie, 2 - series
     public string $productionDate;
     public int $numberOfEpisodes;
     public Media $coverImage;

@@ -39,7 +39,7 @@ $ratingValue = isset($highlightedShow->rating) ? number_format((float) $highligh
             <?php endif; ?>
             <?php if (($highlightedShow->type ?? null) !== 1 && !empty($highlightedShow->numberOfEpisodes)): ?>
                 <div class="meta-item">
-                    <span><i class="fas fa-tv"></i> <?= (int) $highlightedShow->numberOfEpisodes ?> sezonów</span>
+                    <span><i class="fas fa-tv"></i> <?= (int) $highlightedShow->numberOfEpisodes ?> odcinków</span>
                 </div>
             <?php endif; ?>
         </div>

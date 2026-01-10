@@ -6,11 +6,11 @@ $sectionTitle = $params['sectionTitle'] ?? 'Najwyżej oceniane';
 
 ?>
 
-<div class="movie-list-section">
+<div>
     <div class="category-title"><?= e($sectionTitle) ?></div>
     <div class="movies-grid">
         <?php foreach ($shows as $show): ?>
-            <?= component('movie-list/movie', ['show' => $show]) ?>
+            <?php component('movie-list/movie', ['show' => $show]) ?>
         <?php endforeach; ?>
     </div>
 </div>

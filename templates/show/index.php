@@ -42,7 +42,7 @@ $ratingValue = isset($show->rating) ? number_format((float) $show->rating, 1) : 
                 <?php endif; ?>
                 <?php if (($show->type ?? null) !== 1 && ! empty($show->numberOfEpisodes)): ?>
                     <div class="meta-item">
-                        <span><i class="fas fa-tv"></i> <?php echo (int) $show->numberOfEpisodes; ?> sezonów</span>
+                        <span><i class="fas fa-tv"></i> <?php echo (int) $show->numberOfEpisodes; ?> odcinków</span>
                     </div>
                 <?php endif; ?>
             </div>
