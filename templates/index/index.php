@@ -2,49 +2,54 @@
 /**
  * Strona główna - Widok
  */
+$shows = $params['shows'];
+$highlightedShow = $params['highlightedShow'];
 
-
-$heroMovie = [
-        'title' => 'Oppenheimer',
-        'year' => 2023,
-        'duration' => 180,
-        'desc' => 'Historia J. Roberta Oppenheimera i jego roli w rozwoju bomby atomowej.',
-        'rating' => 8.9,
-        'votes' => 215,
-        'bg' => 'https://image.tmdb.org/t/p/original/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg'
-];
-
-$categories = [
-        'NAJWYŻEJ OCENIANE',
-        'ULUBIONE',
-        'KOMEDIE'
-];
+$typeLabel = ($highlightedShow->type ?? null) === 1 ? 'Film' : 'Serial';
+$year = $highlightedShow->productionDate ? substr($highlightedShow->productionDate, 0, 4) : '';
+$ratingValue = isset($highlightedShow->rating) ? number_format((float) $highlightedShow->rating, 1) : '';
 ?>
-<?php
 
-<div class="hero-banner" id="hero-banner" style="background-image: url(""); background-position: center top;">    <div class="hero-overlay"></div>
+<?php component('movie-background', ['backgroundImage' => $highlightedShow->backgroundImage]); ?>
+
+<div class="hero-banner" id="hero-banner">
+    <div class="hero-poster">
+        <img src="<?= e($highlightedShow->coverImage->src) ?>" 
+             alt="<?= e($highlightedShow->coverImage->alt) ?>" 
+             class="hero-poster-image">
+    </div>
+    
     <div class="hero-content">
 
-        <div class="hero-tag" id="hero-category">Film</div>
+        <div class="hero-tag" id="hero-category"><?= e($typeLabel) ?></div>
 
-        <h1 class="hero-title" id="hero-title">Oppenheimer</h1>
+        <h1 class="hero-title" id="hero-title"><?= e($highlightedShow->title) ?></h1>
 
         <div class="hero-meta">
-            <span id="hero-year">2023</span>
-            <span>•</span>
-            <span id="hero-duration">180 min</span>
-        </div>
-
-        <div class="rating-box" style="margin-bottom: 20px;">
-            <span class="stars" id="hero-stars" style="color: #FFD700; letter-spacing: 2px;">★★★★☆</span>
+            <?php if ($ratingValue !== ''): ?>
+                <div class="meta-item">
+                    <span class="rating-stars"><i class="fas fa-star"></i></span>
+                    <span class="rating-score"><?php echo $ratingValue; ?> / 5 <?php if (! empty($highlightedShow->numberOfRatings)) { echo ' (' . (int) $highlightedShow->numberOfRatings . ' ocen)'; } ?></span>
+                </div>
+            <?php endif; ?>
+            <?php if ($year): ?>
+                <div class="meta-item">
+                    <span><i class="fas fa-calendar"></i> <?= e($year) ?></span>
+                </div>
+            <?php endif; ?>
+            <?php if (($highlightedShow->type ?? null) !== 1 && !empty($highlightedShow->numberOfEpisodes)): ?>
+                <div class="meta-item">
+                    <span><i class="fas fa-tv"></i> <?= (int) $highlightedShow->numberOfEpisodes ?> odcinków</span>
+                </div>
+            <?php endif; ?>
         </div>
 
         <p class="hero-desc" id="hero-desc">
-            Historia J. Roberta Oppenheimera i jego roli w rozwoju bomby atomowej.
+            <?= e($highlightedShow->description) ?>
         </p>
 
         <div class="hero-actions">
-            <a href="/movie" class="btn-lg btn-primary-soft" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+            <a href="/show?id=<?= $highlightedShow->id ?>" class="btn-lg btn-primary-soft" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
                 <span style="font-size: 18px;">▶</span> Zobacz szczegóły
             </a>
             <a href="/rate" class="btn btn-ghost btn-lg" style="text-decoration: none;">
@@ -59,42 +64,6 @@ $categories = [
 
 <div class="content-panel">
     <div class="lists-wrapper">
-
-        <div class="movie-list-section">
-            <div class="category-title">NAJWYŻEJ OCENIANE:</div>
-            <div class="movies-grid">
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-            </div>
-        </div>
-
-        <div class="movie-list-section">
-            <div class="category-title">ULUBIONE:</div>
-            <div class="movies-grid">
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-            </div>
-        </div>
-
-        <div class="movie-list-section">
-            <div class="category-title">KOMEDIE:</div>
-            <div class="movies-grid">
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-                <div class="movie-placeholder"></div>
-            </div>
-        </div>
-
+        <?php component('movie-list', ['shows' => $shows]) ?>
     </div>
 </div>
