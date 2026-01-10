@@ -7,7 +7,7 @@ $nStreamings = count($show->streamings);
 ?>
 
 <a href="/show?id=<?= $show->id ?>" class="movie" style="background-image: url('<?= e($show->coverImage->src); ?>');">
-    <button class="movie-like">♡</button>
+    <button class="movie-like" aria-label="Dodaj do ulubionych">♡</button>
     <div class="movie-info">
         <div class="movie-rating">
             <span class="star"><i class="fas fa-star"></i></span>
