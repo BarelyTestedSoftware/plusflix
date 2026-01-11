@@ -32,7 +32,7 @@ class ShowController
         $show = Show::fromArray($data);
         // @todo: walidacja (np. czy tytuł nie jest pusty)
         $show->save();
-        $router->redirect('/show/');
+        $router->redirect('/admin/show/');
     }
 
     public function edit (int $id): array {
@@ -56,7 +56,7 @@ class ShowController
         }
 
         $show->save();
-        $router->redirect('/shows/');
+        $router->redirect('/admin/show/');
     }
 
     public function delete (int $id, Router $router): void {
@@ -65,6 +65,6 @@ class ShowController
             throw new NotFoundException("Produkcja o ID $id nie istnieje");
         }
         $show->delete();
-        $router->redirect('/show/');
+        $router->redirect('/admin/show/');
     }
 }

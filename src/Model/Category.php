@@ -117,4 +117,12 @@ class Category
         $this->setId(null);
         $this->setName(null);
     }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+        ];
+    }
 }

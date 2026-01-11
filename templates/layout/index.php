@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://kit.fontawesome.com/5d20f47750.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/admin.css">
     <?= getCollectedStyles() ?>
     <title><?= e($params['title'] ?? 'Custom Framework') ?></title>
 </head>

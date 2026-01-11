@@ -12,10 +12,13 @@
             if ( is_array($value) && ($value['src'] ?? false) ) {
                 return '<img src="' . e( $value['src'] ) . '" alt="' . e( $value['alt'] ?? '' ) . '">';
             }
+            if ( is_array($value) && ($value['name'] ?? false) ) {
+                return e( $value['name']);
+            }
             if (is_array($value)) {
                 $html = '<div class="admin-modal__pills">';
                 foreach ($value as $item) {
-                    $html .= '<span class="admin-modal__pill">' . e($item) . '</span>';
+                    $html .= '<span class="admin-modal__pill">' . e($item["name"] ?? $item) . '</span>';
                 }
                 $html .= '</div>';
                 return $html;
@@ -28,7 +31,7 @@
 <div class="admin-modal" id="admin-modal-<?= e($id); ?>" style="display: none;">
     <div class="admin-modal__content">
         <div class="admin-modal__header">
-            <p>Szczegóły produkcji</p>
+            <p>Szczegóły</p>
             <div class ="admin-modal__close-icon" onclick="closeModal(<?= e($id); ?>)">
                 <i class="fa-solid fa-x fa-lg"></i>
             </div>
