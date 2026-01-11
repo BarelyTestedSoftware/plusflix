@@ -1,7 +1,7 @@
 <?php
 /**
- * Route: /category
- * GET
+ * Route: /admin/show
+ * GET - wyświetlenie konkretnego rekordu lub listy produkcji
  * 
  */
 
@@ -16,7 +16,7 @@ $controller = new ShowController();
 $showsObj = $controller->getAll()["shows"];
 
 // Zamień na 2D przez toArray
-$showaData = array_map(function ($cat) {
+$showsData = array_map(function ($cat) {
     if ($cat instanceof Show) {
         return $cat->toArray();
     }
@@ -26,7 +26,7 @@ $showaData = array_map(function ($cat) {
 // Opcjonalnie: jeśli przekazano id i GET, przefiltruj jeden rekord (np. do podglądu)
 if ($router->isGet() && null !== $router->get('id')) {
     $id = (int) $router->get('id');
-    $showaData = array_values(array_filter($showaData, fn($row) => (int)($row['id'] ?? 0) === $id));
+    $showsData = array_values(array_filter($showsData, fn($row) => (int)($row['id'] ?? 0) === $id));
 }
 
 return [
@@ -34,7 +34,7 @@ return [
     'params' => [
         'router' => $router,
         'table_column_names' => ['ID', 'Tytuł', 'opis', 'typ', 'data produkcji', 'ilość odcinków', 'okładka', 'zdjęcie tła', 'reżyser', 'aktorzy', 'streamingi', 'kategorie', 'średnia ocena', 'ilość ocen'],
-        'data' => $showaData,
+        'data' => $showsData,
         'header' => 'Lista produkcji'
     ],
     'title' => 'produkcje',

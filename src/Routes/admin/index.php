@@ -1,4 +1,8 @@
 <?php
+/**
+ * Route: /admin
+ * Wybór podstrony administracyjnej
+ */
 
 return [
     'template' => 'admin',

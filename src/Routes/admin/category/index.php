@@ -1,7 +1,7 @@
 <?php
 /**
- * Route: /category
- * GET
+ * Route: /admin/category
+ * GET - wyświetlenie konkretnego rekordu lub listy kategorii
  * 
  */
 

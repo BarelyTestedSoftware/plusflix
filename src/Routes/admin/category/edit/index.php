@@ -1,7 +1,8 @@
 <?php
 /**
- * Route: /category/add
- * POST -> zapis nowej kategorii
+ * Route: /admin/category/edit
+ * GET -> formularz edycji kategorii
+ * POST -> zapis edytowanej kategorii
  */
 
 use App\Controller\CategoryController;

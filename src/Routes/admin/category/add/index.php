@@ -1,6 +1,6 @@
 <?php
 /**
- * Route: /category/add
+ * Route: /admin/category/add
  * POST -> zapis nowej kategorii
  */
 

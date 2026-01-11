@@ -1,6 +1,6 @@
 <?php
 /**
- * Route: /category/delete
+ * Route: /admin/category/delete
  * GET -> usunięcie kategorii
  * GET parameter: id
  */

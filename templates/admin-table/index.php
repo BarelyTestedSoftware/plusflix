@@ -4,6 +4,13 @@ $table_column_names = $params['table_column_names'];
 $router = $params['router'];
 $header = $params['header'] ?? 'Lista kategorii';
 $total = count($data);
+
+$records = 'wpisów';
+if ($total === 1) {
+	$records = 'wpis';
+} elseif ($total > 1 && $total < 5) {
+	$records = 'wpisy';
+}
 ?>
 
 <div class="admin-page">
@@ -14,7 +21,7 @@ $total = count($data);
 		<div class="admin-header__titles">
 			<p class="admin-eyebrow">Zarządzanie</p>
 			<h1><?= e($header) ?></h1>
-			<p class="admin-subtitle">Łącznie: <?= e($total) ?> <?= $total === 1 ? 'kategoria' : 'kategorie' ?></p>
+			<p class="admin-subtitle">Łącznie: <?= e($total) ?> <?= e($records) ?></p>
 		</div>
 	<div class="admin-actions">
 		<a href="<?= "/" . e($router->getUri()) . '/add' ?>" class="btn btn-primary-soft" aria-label="Dodaj nowy wpis" title="Dodaj">

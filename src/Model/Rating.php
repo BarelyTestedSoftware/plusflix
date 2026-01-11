@@ -13,7 +13,7 @@ class Rating
         return [
             'id' => $this->id,
             'value' => $this->value,
-            'show_id' => $this->show->id,
+            'show_id' => $this->show->getId(),
         ];
     }
 }
