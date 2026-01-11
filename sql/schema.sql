@@ -1,0 +1,73 @@
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS category (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS streaming (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    logoImageId INTEGER,
+    FOREIGN KEY (logoImageId) REFERENCES media(id)
+);
+
+CREATE TABLE IF NOT EXISTS person (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    type INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS media (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    src VARCHAR(255) NOT NULL,
+    alt VARCHAR(255)
+);
+
+
+CREATE TABLE IF NOT EXISTS show (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    type INTEGER,
+    productionDate DATE,
+    numberOfEpisodes INTEGER,
+    coverImageId INTEGER,
+    backgroundImageId INTEGER,
+    directorId INTEGER,
+    FOREIGN KEY (coverImageId) REFERENCES media(id),
+    FOREIGN KEY (backgroundImageId) REFERENCES media(id),
+    FOREIGN KEY (directorId) REFERENCES person(id)
+);
+
+CREATE TABLE IF NOT EXISTS showStreaming (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    showId INTEGER,
+    streamingId INTEGER,
+    linkToShow VARCHAR(255),
+    FOREIGN KEY (showId) REFERENCES show(id) ON DELETE CASCADE,
+    FOREIGN KEY (streamingId) REFERENCES streaming(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS showCategory (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    showId INTEGER,
+    categoryId INTEGER,
+    FOREIGN KEY (showId) REFERENCES show(id) ON DELETE CASCADE,
+    FOREIGN KEY (categoryId) REFERENCES category(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS showActor (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    showId INTEGER,
+    personId INTEGER,
+    FOREIGN KEY (showId) REFERENCES show(id) ON DELETE CASCADE,
+    FOREIGN KEY (personId) REFERENCES person(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS rating (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    value INTEGER,
+    showId INTEGER,
+    FOREIGN KEY (showId) REFERENCES show(id) ON DELETE CASCADE
+);
