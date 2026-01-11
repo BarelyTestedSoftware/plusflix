@@ -2,6 +2,9 @@
     $table_column_names = $params['table_column_names'] ?? [];
     $data = $params['data'] ?? [];
     $no_data_message = $params['no_data_message'] ?? 'No data available.';
+    $editUrl = $params['edit_url'] ?? '/edit';
+    $deleteUrl = $params['delete_url'] ?? '/delete';
+    $router = $params['router'];
 
     $n_columns = count( $table_column_names );
 
@@ -48,8 +51,8 @@
                             <?= format_value( $item ); ?>
                         </td>
                     <?php endforeach; ?>
-                    <td onclick="edit(event, <?= e( $row['id'] ?? '' ); ?>)"><i class="fa-solid fa-pen-to-square"></i></td>
-                    <td onclick="del(event, <?= e( $row['id'] ?? '' ); ?>)"><i class="fa-solid fa-trash"></i></td>
+                    <td class="icon" onclick="edit(event, <?= e( $row['id'] ?? '' ); ?>)"><i class="fa-solid fa-pen-to-square"></i></td>
+                    <td class="icon" onclick="del(event, <?= e( $row['id'] ?? '' ); ?>)"><i class="fa-solid fa-trash"></i></td>
                 </tr>
                 <?= component('admin-modal', [
                     'table_column_names' => $table_column_names,
@@ -62,6 +65,8 @@
 </div>
 
 <script>
+    const ADMIN_TABLE_URL = <?= json_encode($router->getUri()) ?>;
+
     function openModal(id) {
         const modal = document.getElementById('admin-modal-' + id);
         modal.style.display = 'flex';
@@ -74,12 +79,11 @@
 
     function edit(e, id) {
         e.stopPropagation();
-        console.log(window.location);
-        window.location.href = window.location.origin + '/edit?id=' + id;
+        window.location.href = "/" + ADMIN_TABLE_URL + '/edit?id=' + id;
     }
 
     function del(e, id) {
         e.stopPropagation();
-        window.location.href = window.location.origin + '/delete?id=' + id;
+        window.location.href = "/" + ADMIN_TABLE_URL + '/delete?id=' + id;
     }
 </script>

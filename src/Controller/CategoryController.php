@@ -26,7 +26,7 @@ class CategoryController
         $category = Category::fromArray($data);
         // @todo: walidacja
         $category->save();
-        $router->redirect('/category');
+        $router->redirect('/admin/category');
     }
 
     public function edit(int $id): array
@@ -47,7 +47,7 @@ class CategoryController
         $category->fill($data);
         // @todo: walidacja
         $category->save();
-        $router->redirect('/category');
+        $router->redirect('/admin/category');
     }
 
     public function delete(int $id, Router $router): void
@@ -57,6 +57,6 @@ class CategoryController
             throw new NotFoundException("Kategoria o ID $id nie istnieje");
         }
         $category->delete();
-        $router->redirect('/category');
+        $router->redirect('/admin/category');
     }
 }

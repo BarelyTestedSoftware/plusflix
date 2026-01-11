@@ -11,7 +11,12 @@ use App\Controller\CategoryController;
 $controller = new CategoryController();
 
 if ($router->isPost()) {
-    $controller->store($router->post('category'), $router);
+    $controller->store($_POST, $router);
 }
 
-return null;
+return [
+    'template' => 'admin/category-form',
+    'params' => ['router' => $router],
+    'title' => 'dodaj kategorię',
+    'bodyClass' => 'category-add',
+];

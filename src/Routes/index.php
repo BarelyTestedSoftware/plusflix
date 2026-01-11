@@ -8,40 +8,40 @@
 $shows = [];
 for ($i = 1; $i <= 6; $i++) {
     $show = new \App\Model\Show();
-    $show->id = $i;
-    $show->title = "Serial " . $i;
-    $show->description = "Opis serialu " . $i;
-    $show->type = 1;
-    $show->productionDate = "202" . ($i % 3) . "-01-15";
-    $show->numberOfEpisodes = 10 + ($i * 2);
+    $show->setId($i);
+    $show->setTitle("Serial " . $i);
+    $show->setDescription("Opis serialu " . $i);
+    $show->setType(1);
+    $show->setProductionDate("202" . ($i % 3) . "-01-15");
+    $show->setNumberOfEpisodes(10 + ($i * 2));
     
     $coverImage = new \App\Model\Media();
     $coverImage->id = $i;
     $coverImage->src = "https://m.media-amazon.com/images/M/MV5BMDBmYTZjNjUtN2M1MS00MTQ2LTk2ODgtNzc2M2QyZGE5NTVjXkEyXkFqcGdeQXVyNzAwMjU2MTY@._V1_.jpg";
     $coverImage->alt = "Cover Serial " . $i;
-    $show->coverImage = $coverImage;
+    $show->setCoverImage($coverImage);
     
     $backgroundImage = new \App\Model\Media();
     $backgroundImage->id = 100 + $i;
     $backgroundImage->src = "https://www.hindustantimes.com/ht-img/img/2023/07/22/550x309/oppenheimer_1690033428720_1690033428887.jpg";
     $backgroundImage->alt = "Background Serial " . $i;
-    $show->backgroundImage = $backgroundImage;
+    $show->setBackgroundImage($backgroundImage);
     
     $director = new \App\Model\Person();
     $director->id = $i;
     $director->name = "Reżyser " . $i;
     $director->type = 1;
-    $show->director = $director;
-    
-    $show->actors = [];
-    $show->streamings = [
+    $show->setDirector($director);
+
+    $show->setActors([]);
+    $show->setStreamings([
         (new \App\Model\Streaming()),
         (new \App\Model\Streaming()),
-    ];
-    $show->categories = [];
-    
-    $show->rating = rand(40, 50) / 10;
-    $show->numberOfRatings = rand(50, 500);
+    ]);
+    $show->setCategories([]);
+
+    $show->setRating(rand(40, 50) / 10);
+    $show->setNumberOfRatings(rand(50, 500));
     
     $shows[] = $show;
 }
@@ -49,30 +49,30 @@ for ($i = 1; $i <= 6; $i++) {
 // Przykładowe dane pokazu do widoku „show” 
 // TODO: W przyszłości pobierać z bazy danych na podstawie ID z URL
 $show = new \App\Model\Show();
-$show->id = 1;
-$show->title = 'Oppenheimer';
-$show->description = 'Historia J. Roberta Oppenheimera i jego roli w rozwoju bomby atomowej.';
-$show->type = 1; // 1 = film
-$show->productionDate = '2023-07-21';
-$show->numberOfEpisodes = 1;
+$show->setId(1);
+$show->setTitle('Oppenheimer');
+$show->setDescription('Historia J. Roberta Oppenheimera i jego roli w rozwoju bomby atomowej.');
+$show->setType(1); // 1 = film
+$show->setProductionDate('2023-07-21');
+$show->setNumberOfEpisodes(1);
 
 $coverImage = new \App\Model\Media();
 $coverImage->id = 1;
 $coverImage->src = 'https://image.tmdb.org/t/p/w600_and_h900_bestv2/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg';
 $coverImage->alt = 'Plakat Oppenheimer';
-$show->coverImage = $coverImage;
+$show->setCoverImage($coverImage);
 
 $backgroundImage = new \App\Model\Media();
 $backgroundImage->id = 2;
 $backgroundImage->src = 'https://www.hindustantimes.com/ht-img/img/2023/07/22/550x309/oppenheimer_1690033428720_1690033428887.jpg';
 $backgroundImage->alt = 'Tło Oppenheimer';
-$show->backgroundImage = $backgroundImage;
+$show->setBackgroundImage($backgroundImage);
 
 $director = new \App\Model\Person();
 $director->id = 1;
 $director->name = 'Christopher Nolan';
 $director->type = 1;
-$show->director = $director;
+$show->setDirector($director);
 
 $actors = [];
 foreach ([
@@ -86,7 +86,7 @@ foreach ([
     $actor->type = 0;
     $actors[] = $actor;
 }
-$show->actors = $actors;
+$show->setActors($actors);
 
 $streamings = [];
 foreach ([
@@ -107,7 +107,7 @@ foreach ([
 
     $streamings[] = $streaming;
 }
-$show->streamings = $streamings;
+$show->setStreamings($streamings);
 
 $categories = [];
 foreach ([
@@ -119,10 +119,11 @@ foreach ([
     $category->setName($categoryData['name']);
     $categories[] = $category;
 }
-$show->categories = $categories;
 
-$show->rating = 4.0;
-$show->numberOfRatings = 1287;
+$show->setCategories($categories);
+
+$show->setRating(4.0);
+$show->setNumberOfRatings(1287);
 
 return [
     'template' => 'index',

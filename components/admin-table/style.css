@@ -17,18 +17,23 @@
     position: relative;
 }
 
+.admin-table td.icon {
+    width: 40px;
+    text-align: center;
+    cursor: pointer;
+}
 
 .admin-table tr:last-child td {
     border-bottom: none;
 }
 
 .admin-table thead {
-    background-color: var(--background-color-light);
+    background-color: var(--bg-surface);
     font-weight: bold;
 }
 
 .admin-table tr:hover {
-    background-color: var(--background-color-light);
+    background-color: var(--bg-surface);
     cursor: pointer;
 }
 
@@ -50,9 +55,9 @@
 
 .admin-table i {
     transition: 0.1s;
-    color: var(--font-color);
+    color: var(--text-main);
 }
 
 .admin-table i:hover {
-    color: var(--accent-color-2);
+    color: var(--accent-blue);
 }

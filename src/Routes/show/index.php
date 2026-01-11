@@ -3,30 +3,30 @@
 // Przykładowe dane pokazu do widoku „show” 
 // TODO: W przyszłości pobierać z bazy danych na podstawie ID z URL
 $show = new \App\Model\Show();
-$show->id = 1;
-$show->title = 'Oppenheimer';
-$show->description = 'Historia J. Roberta Oppenheimera i jego roli w rozwoju bomby atomowej.';
-$show->type = 1; // 1 = film
-$show->productionDate = '2023-07-21';
-$show->numberOfEpisodes = 1;
+$show->setId(1);
+$show->setTitle('Oppenheimer');
+$show->setDescription('Historia J. Roberta Oppenheimera i jego roli w rozwoju bomby atomowej.');
+$show->setType(1); // 1 = film
+$show->setProductionDate('2023-07-21');
+$show->setNumberOfEpisodes(1);
 
 $coverImage = new \App\Model\Media();
 $coverImage->id = 1;
 $coverImage->src = 'https://image.tmdb.org/t/p/w600_and_h900_bestv2/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg';
 $coverImage->alt = 'Plakat Oppenheimer';
-$show->coverImage = $coverImage;
+$show->setCoverImage($coverImage);
 
 $backgroundImage = new \App\Model\Media();
 $backgroundImage->id = 2;
 $backgroundImage->src = 'https://www.hindustantimes.com/ht-img/img/2023/07/22/550x309/oppenheimer_1690033428720_1690033428887.jpg';
 $backgroundImage->alt = 'Tło Oppenheimer';
-$show->backgroundImage = $backgroundImage;
+$show->setBackgroundImage($backgroundImage);
 
 $director = new \App\Model\Person();
 $director->id = 1;
 $director->name = 'Christopher Nolan';
 $director->type = 1;
-$show->director = $director;
+$show->setDirector($director);
 
 $actors = [];
 foreach ([
@@ -40,7 +40,7 @@ foreach ([
     $actor->type = 0;
     $actors[] = $actor;
 }
-$show->actors = $actors;
+$show->setActors($actors);
 
 $streamings = [];
 foreach ([
@@ -61,7 +61,7 @@ foreach ([
 
     $streamings[] = $streaming;
 }
-$show->streamings = $streamings;
+$show->setStreamings($streamings);
 
 $categories = [];
 foreach ([
@@ -73,10 +73,10 @@ foreach ([
     $category->setName($categoryData['name']);
     $categories[] = $category;
 }
-$show->categories = $categories;
+$show->setCategories($categories);
 
-$show->rating = 4.0;
-$show->numberOfRatings = 1287;
+$show->setRating(4.0);
+$show->setNumberOfRatings(1287);
 
 return [
     'template' => 'show',
