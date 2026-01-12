@@ -1,7 +1,7 @@
 <?php
 /**
- * InputText Component
- * Prosty komponent pola tekstowego
+ * InputField Component
+ * Uniwersalny komponent pola formularza
  */
 
 $name = $params['name'] ?? 'input';
@@ -18,14 +18,14 @@ $pattern = $params['pattern'] ?? null;
 $className = $params['class'] ?? '';
 ?>
 
-<div class="input-text-wrapper">
+<div class="input-field-wrapper">
 <input 
     type="<?= e($type) ?>"
     id="<?= e($id) ?>"
     name="<?= e($name) ?>"
     value="<?= e($value) ?>"
     placeholder="<?= e($placeholder) ?>"
-    class="input-text <?= e($className) ?>"
+    class="input-field <?= e($className) ?>"
     <?= $required ? 'required' : '' ?>
     <?= $disabled ? 'disabled' : '' ?>
     <?= $readonly ? 'readonly' : '' ?>

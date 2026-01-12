@@ -1,10 +1,11 @@
-.input-text {
+/* InputField - uniwersalny komponent inputa */
+.input-field, input, select, textarea {
     width: 100%;
     padding: 0.75rem 1rem;
-    font-size: 1rem;
+    font-size: 14px;
     line-height: 1.5;
     color: var(--text-main);
-    background-color: var(--bg-input);
+    background-color: var(--background-color-light);
     border: 1px solid var(--line-color);
     border-radius: var(--radius-s);
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -12,23 +13,23 @@
     font-family: var(--font-main);
 }
 
-.input-text:focus {
+.input-field:focus {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(108, 93, 211, 0.25);
 }
 
-.input-text:disabled {
+.input-field:disabled {
     background-color: var(--bg-surface);
     cursor: not-allowed;
     opacity: 0.5;
 }
 
-.input-text:read-only {
+.input-field:read-only {
     background-color: var(--bg-surface);
 }
 
-.input-text::placeholder {
+.input-field::placeholder {
     color: var(--text-muted);
     opacity: 1;
 }

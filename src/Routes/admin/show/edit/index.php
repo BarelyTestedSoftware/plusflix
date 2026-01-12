@@ -16,7 +16,7 @@ if ($router->isPost()) {
 $data = $controller->edit($id);
 
 return [
-    'template' => 'admin/show-form/index',
+    'template' => 'admin/show-form',
     'params' => array_merge($data, ['router' => $router]),
     'title' => 'Edytuj Produkcję'
 ];
