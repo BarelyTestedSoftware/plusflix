@@ -26,7 +26,7 @@ $streamings = [];
 
 $pdo = new PDO(\App\Service\Config::get('db_dsn'), \App\Service\Config::get('db_user'), \App\Service\Config::get('db_pass'));
 // Pobierz aktorów (type=0)
-$stmt = $pdo->query('SELECT id, name FROM person WHERE type = 0 ORDER BY name');
+$stmt = $pdo->query('SELECT id, name FROM person WHERE type = 1 ORDER BY name');
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $actor = new Person();
     $actor->id = (int)$row['id'];
@@ -35,7 +35,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $actors[] = $actor;
 }
 // Pobierz reżyserów (type=1)
-$stmt = $pdo->query('SELECT id, name FROM person WHERE type = 1 ORDER BY name');
+$stmt = $pdo->query('SELECT id, name FROM person WHERE type = 2 ORDER BY name');
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $director = new Person();
     $director->id = (int)$row['id'];

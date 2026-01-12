@@ -59,13 +59,11 @@ $header = 'Dodaj produkcję';
 			</div>
 			<div class="form-group">
 				<label for="show_director" class="form-label">Reżyser</label>
-				<?php component('select-with-search', [
+				<?php component('select', [
 					'name' => 'show[director]',
 					'options' => array_reduce($params['directors'] ?? [], function($out, $dir) { $out[$dir->id] = $dir->name; return $out; }, []),
 					'placeholder' => 'Wybierz reżysera',
 					'required' => false,
-					'allowCustom' => false,
-					'multiple' => false,
 				]); ?>
 			</div>
 			<div class="form-group">
@@ -75,7 +73,7 @@ $header = 'Dodaj produkcję';
 					'options' => array_reduce($params['actors'] ?? [], function($out, $actor) { $out[$actor->id] = $actor->name; return $out; }, []),
 					'placeholder' => 'Wybierz aktorów',
 					'required' => false,
-					'allowCustom' => false,
+					'allowCustom' => true,
 				]); ?>
 			</div>
 			<div class="form-group">

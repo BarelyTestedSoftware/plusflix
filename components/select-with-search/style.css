@@ -57,7 +57,7 @@
 
 .select-with-search__dropdown {
     position: absolute;
-    top: 100%;
+    top: 49px;
     left: 0;
     right: 0;
     max-height: 200px;
