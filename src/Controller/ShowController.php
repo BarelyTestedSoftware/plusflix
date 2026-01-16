@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Exception\NotFoundException;
 use App\Model\Show;
+use App\Model\Media;
 use App\Service\Router;
 
 class ShowController
@@ -30,7 +31,26 @@ class ShowController
         }
 
         $show = Show::fromArray($data);
-        // @todo: walidacja (np. czy tytuł nie jest pusty)
+        
+        // Obsługa zdjęć
+        if (!empty($data['coverImage'])) {
+            $media = new Media();
+            $media->src = $data['coverImage'];
+            $media->alt = $data['title'] . ' - Cover Image';
+            // TODO: Zmień na rzeczywisty zapis do bazy przez MediaController::store()
+            $media->id = 1; // mockowany ID
+            $show->setCoverImage($media);
+        }
+        
+        if (!empty($data['backgroundImage'])) {
+            $media = new Media();
+            $media->src = $data['backgroundImage'];
+            $media->alt = ''; // zdjęcia dekoracyjne powinny mieć pusty alt
+            // TODO: Zmień na rzeczywisty zapis do bazy przez MediaController::store()
+            $media->id = 1; // mockowany ID
+            $show->setBackgroundImage($media);
+        }
+        
         $show->save();
         $router->redirect('/admin/show/');
     }
@@ -48,11 +68,30 @@ class ShowController
         if (!$show) {
             throw new NotFoundException("Produkcja o ID $id nie istnieje");
         }
-
+        
         $show->fill($data);
         // @todo: walidacja
         if (isset($data['title']) && empty($data['title'])) {
             throw new \InvalidArgumentException("Podczas edycji tytuł nie może byc pusty.");
+        }
+        
+        // Obsługa zdjęć
+        if (!empty($data['coverImage'])) {
+            $media = new Media();
+            $media->src = $data['coverImage'];
+            $media->alt = $data['title'] . ' - Cover Image';
+            // TODO: Zmień na rzeczywisty zapis do bazy przez MediaController::store()
+            $media->id = 1; // mockowany ID
+            $show->setCoverImage($media);
+        }
+        
+        if (!empty($data['backgroundImage'])) {
+            $media = new Media();
+            $media->src = $data['backgroundImage'];
+            $media->alt = ''; // zdjęcia dekoracyjne powinny mieć pusty alt
+            // TODO: Zmień na rzeczywisty zapis do bazy przez MediaController::store()
+            $media->id = 1; // mockowany ID
+            $show->setBackgroundImage($media);
         }
 
         $show->save();

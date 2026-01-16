@@ -187,12 +187,19 @@ class Show
         $this->setDescription($array['description'] ?? $this->getDescription());
         $this->setType(isset($array['type']) ? (int) $array['type'] : $this->getType());
 
-        // Kolumny w bazie są w camelCase, dopuszczamy także aliasy snake_case z zapytań
-        $productionDate = $array['productionDate'] ?? $array['production_date'] ?? null;
+        $productionDate = $array['production_date'] ?? null;
         $this->setProductionDate($productionDate ?? $this->getProductionDate());
 
-        $numberOfEpisodes = $array['numberOfEpisodes'] ?? $array['number_of_episodes'] ?? null;
+        $numberOfEpisodes = $array['number_of_episodes'] ?? null;
         $this->setNumberOfEpisodes($numberOfEpisodes !== null ? (int) $numberOfEpisodes : $this->getNumberOfEpisodes());
+
+        $directorId = $array['director'] ?? null;
+        if ($directorId !== null) {
+            // TODO: Załaduj pełny obiekt Person
+            $director = new Person();
+            $director->id = ((int) $directorId);
+            $this->setDirector($director);
+        }
 
         return $this;
     }
@@ -205,10 +212,10 @@ class Show
                 d.id AS director_id, d.name AS director_name, d.type AS director_type,
                 AVG(r.value) AS avg_rating, COUNT(r.id) AS rating_count
             FROM show s
-            LEFT JOIN media cover ON cover.id = s.coverImageId
-            LEFT JOIN media bg ON bg.id = s.backgroundImageId
-            LEFT JOIN person d ON d.id = s.directorId
-            LEFT JOIN rating r ON r.showId = s.id
+            LEFT JOIN media cover ON cover.id = s.cover_image_id
+            LEFT JOIN media bg ON bg.id = s.background_image_id
+            LEFT JOIN person d ON d.id = s.director_id
+            LEFT JOIN rating r ON r.show_id = s.id
             GROUP BY s.id';
         $statement = $pdo->prepare($sql);
         $statement->execute();
@@ -243,10 +250,10 @@ class Show
                 d.id AS director_id, d.name AS director_name, d.type AS director_type,
                 AVG(r.value) AS avg_rating, COUNT(r.id) AS rating_count
             FROM show s
-            LEFT JOIN media cover ON cover.id = s.coverImageId
-            LEFT JOIN media bg ON bg.id = s.backgroundImageId
-            LEFT JOIN person d ON d.id = s.directorId
-            LEFT JOIN rating r ON r.showId = s.id
+            LEFT JOIN media cover ON cover.id = s.cover_image_id
+            LEFT JOIN media bg ON bg.id = s.background_image_id
+            LEFT JOIN person d ON d.id = s.director_id
+            LEFT JOIN rating r ON r.show_id = s.id
             WHERE s.id = :id
             GROUP BY s.id';
         $statement = $pdo->prepare($sql);
@@ -259,38 +266,69 @@ class Show
 
         $show = self::hydrateBaseWithJoins($showArray);
 
-        self::populateCategories($pdo, [$id => $show], [$id]);
-        self::populateActors($pdo, [$id => $show], [$id]);
-        self::populateStreamings($pdo, [$id => $show], [$id]);
+        // Use a referenced map so populate* can mutate the show instance
+        $showMap = [$id => $show];
+        self::populateCategories($pdo, $showMap, [$id]);
+        self::populateActors($pdo, $showMap, [$id]);
+        self::populateStreamings($pdo, $showMap, [$id]);
 
         return $show;
     }
 
     public function save(): void {
         $pdo = new PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+        //echo "\nhej\n";
+        //var_dump($this->toArray());
+        
+        // TODO: Obsługa nowych zdjęć - gdy będzie MediaController, zmień na rzeczywiste tworzenie Media
+        // TODO: Jeśli cover lub background image zostały zmienione, stwórz nowy rekord w media
+        $coverImageId = $this->coverImage?->id ?? null;
+        $backgroundImageId = $this->backgroundImage?->id ?? null;
+        $directorId = $this->director?->id ?? null;
+        
         if (! $this->getId()) {
-            $sql = "INSERT INTO show (title, description, type, production_date, number_of_episodes)
-            VALUES (:title, :description, :type, :production_date, :number_of_episodes)";
+            $sql = "INSERT INTO show (title, description, type, production_date, number_of_episodes, cover_image_id, background_image_id, director_id)
+            VALUES (:title, :description, :type, :production_date, :number_of_episodes, :cover_image_id, :background_image_id, :director_id)";
             $statement = $pdo->prepare($sql);
             $statement->execute([
                 ':title' => $this->getTitle(),
                 ':description' => $this->getDescription(),
                 ':type' => $this->getType(),
                 ':production_date' => $this->getProductionDate(),
-                ':number_of_episodes' => $this->getNumberOfEpisodes(),
+                ':number_of_episodes' => (int)$this->getNumberOfEpisodes(),
+                ':cover_image_id' => $coverImageId,
+                ':background_image_id' => $backgroundImageId,
+                ':director_id' => (int)$directorId,
             ]);
 
             $this->setId($pdo->lastInsertId());
         } else {
+                    //echo "\nhej\n";
+                    var_dump([
+                ':title' => $this->getTitle(),
+                ':description' => $this->getDescription(),
+                ':type' => intval($this->getType()),
+                ':production_date' => $this->getProductionDate(),
+                ':number_of_episodes' => intval($this->getNumberOfEpisodes()),
+                ':cover_image_id' => $coverImageId,
+                ':background_image_id' => $backgroundImageId,
+                ':director_id' => intval($directorId),
+                ':id' => $this->getId(),
+            ]);
             $sql = "UPDATE show SET title = :title, description = :description, type = :type,
-                production_date = :production_date, number_of_episodes = :number_of_episodes WHERE id = :id";
+                production_date = :production_date, number_of_episodes = :number_of_episodes,
+                cover_image_id = :cover_image_id, background_image_id = :background_image_id,
+                director_id = :director_id WHERE id = :id";
             $statement = $pdo->prepare($sql);
             $statement->execute([
                 ':title' => $this->getTitle(),
                 ':description' => $this->getDescription(),
                 ':type' => $this->getType(),
                 ':production_date' => $this->getProductionDate(),
-                ':number_of_episodes' => $this->getNumberOfEpisodes(),
+                ':number_of_episodes' => (int)$this->getNumberOfEpisodes(),
+                ':cover_image_id' => $coverImageId,
+                ':background_image_id' => $backgroundImageId,
+                ':director_id' => (int)$directorId,
                 ':id' => $this->getId(),
             ]);
         }
@@ -350,16 +388,16 @@ class Show
         }
 
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $sql = "SELECT sc.showId, c.id, c.name
-            FROM showCategory sc
-            INNER JOIN category c ON c.id = sc.categoryId
-            WHERE sc.showId IN ($placeholders)
+        $sql = "SELECT sc.show_id, c.id, c.name
+            FROM show_category sc
+            INNER JOIN category c ON c.id = sc.category_id
+            WHERE sc.show_id IN ($placeholders)
             ORDER BY c.name";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($ids);
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $showId = (int) $row['showId'];
+            $showId = (int) $row['show_id'];
             if (! isset($showsById[$showId])) {
                 continue;
             }
@@ -383,16 +421,16 @@ class Show
         }
 
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $sql = "SELECT sa.showId, p.id, p.name, p.type
-            FROM showActor sa
-            INNER JOIN person p ON p.id = sa.personId
-            WHERE sa.showId IN ($placeholders)
+        $sql = "SELECT sa.show_id, p.id, p.name, p.type
+            FROM show_actor sa
+            INNER JOIN person p ON p.id = sa.person_id
+            WHERE sa.show_id IN ($placeholders)
             ORDER BY p.name";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($ids);
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $showId = (int) $row['showId'];
+            $showId = (int) $row['show_id'];
             if (! isset($showsById[$showId])) {
                 continue;
             }
@@ -417,18 +455,18 @@ class Show
         }
 
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $sql = "SELECT ss.showId, st.id, st.name,
+        $sql = "SELECT ss.show_id, st.id, st.name,
                     m.id AS logo_id, m.src AS logo_src, m.alt AS logo_alt
-            FROM showStreaming ss
-            INNER JOIN streaming st ON st.id = ss.streamingId
-            LEFT JOIN media m ON m.id = st.logoImageId
-            WHERE ss.showId IN ($placeholders)
+            FROM show_streaming ss
+            INNER JOIN streaming st ON st.id = ss.streaming_id
+            LEFT JOIN media m ON m.id = st.logo_image_id
+            WHERE ss.show_id IN ($placeholders)
             ORDER BY st.name";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($ids);
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $showId = (int) $row['showId'];
+            $showId = (int) $row['show_id'];
             if (! isset($showsById[$showId])) {
                 continue;
             }
@@ -457,7 +495,7 @@ class Show
             'id' => $this->getId(),
             'title' => $this->getTitle(),
             'description' => $this->getDescription(),
-            'type' => $this->getType(),
+            'type' => ['id' => $this->getType(), 'name' => $this->getType() == 1 ? 'Film' : 'Serial'],
             'productionDate' => $this->getProductionDate(),
             'numberOfEpisodes' => $this->getNumberOfEpisodes(),
             'coverImage' => $this->getCoverImage() ? $this->getCoverImage()->toArray() : null,

@@ -15,9 +15,13 @@
         if ( $value['src'] ?? false ) {
             return '<img src="' . e( $value['src'] ) . '" alt="' . e( $value['alt'] ?? '' ) . '">';
         }
+        if ( is_array($value) && ($value['name'] ?? false) ) {
+            return e( $value['name']);
+        }
         if ( is_array( $value ) ) {
             return count( $value );
         }
+
 
         return mb_strlen( $value ) > 50 ? mb_substr( $value, 0, 50 ) . '...' : $value;
     }
