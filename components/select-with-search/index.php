@@ -122,6 +122,13 @@ if ($multiple) {
         input.addEventListener('input', function() {
             dropdown.hidden = false;
             filterOptions();
+            
+            // Dla single-select z allowCustom, zapisz wartość na żywo
+            if (!isMulti && allowCustom && input.value.trim()) {
+                hiddenInput.value = input.value.trim();
+            } else if (!isMulti && allowCustom && !input.value.trim()) {
+                hiddenInput.value = '';
+            }
         });
 
         // Nawigacja klawiaturą

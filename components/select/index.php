@@ -10,8 +10,9 @@ $placeholder = $params['placeholder'] ?? 'Wybierz...';
 $required = $params['required'] ?? false;
 $className = $params['class'] ?? '';
 $value = $params['value'] ?? '';
+$onchange = $params['onchange'] ?? '';
 ?>
-<div class="select-with-search select-no-search" data-component="select-no-search">
+<div class="select-with-search select-no-search" data-component="select-no-search" <?= $onchange ? 'data-onchange="' . e($onchange) . '"' : '' ?>>
     <div class="select-with-search__input" tabindex="0">
         <span class="select-with-search__selected">
             <?php
@@ -74,6 +75,13 @@ $value = $params['value'] ?? '';
                 selectedSpan.textContent = option.textContent;
                 hiddenInput.value = value;
                 closeDropdown();
+                
+                // Wywołaj onchange jeśli zdefiniowany
+                const onchangeAttr = component.dataset.onchange;
+                if (onchangeAttr) {
+                    const func = new Function('return ' + onchangeAttr);
+                    func.call(hiddenInput);
+                }
             });
         });
     });

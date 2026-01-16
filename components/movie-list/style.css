@@ -5,6 +5,11 @@
     overflow: auto;
 }
 
+.movies-grid--multiline {
+    flex-wrap: wrap;
+    overflow: visible;
+}
+
 .category-title {
     font-size: 13px;
     color: #ccc;
