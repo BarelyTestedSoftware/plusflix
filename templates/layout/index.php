@@ -26,6 +26,9 @@
                     </svg>
                 </button>
             </form>
+        <a href="/login" class="btn btn-primary btn-sm" style="margin-left: 60px; text-decoration: none;">
+            <i class="fas fa-user" style="margin-right: 8px;"></i> Logowanie
+        </a>
         </div>
     </header>
 </nav>

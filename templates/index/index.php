@@ -21,12 +21,6 @@ $description = $highlightedShow->getDescription();
 <?php component('movie-background', ['backgroundImage' => $backgroundImage]); ?>
 
 <div class="hero-banner" id="hero-banner">
-    <div class="hero-poster">
-           <img src="<?= e($coverImage->src) ?>" 
-               alt="<?= e($coverImage->alt) ?>" 
-             class="hero-poster-image">
-    </div>
-    
     <div class="hero-content">
 
         <div class="hero-tag" id="hero-category"><?= e($typeLabel) ?></div>
@@ -72,6 +66,23 @@ $description = $highlightedShow->getDescription();
 
 <div class="content-panel">
     <div class="lists-wrapper">
-        <?php component('movie-list', ['shows' => $shows]) ?>
+
+        <?php
+        $categories = $params['groupedShows'] ?? ['Wszystkie filmy' => $params['shows']];
+        ?>
+
+        <?php foreach ($categories as $categoryName => $categoryShows): ?>
+
+            <div class="movie-list-section">
+                <div class="category-title">
+                    <?= htmlspecialchars($categoryName) ?>
+                </div>
+
+                <?php component('movie-list', ['shows' => $categoryShows]) ?>
+            </div>
+
+        <?php endforeach; ?>
+
     </div>
 </div>
+
