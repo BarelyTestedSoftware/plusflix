@@ -28,8 +28,8 @@ $actors = $show->getActors();
     <div class="movie-details-grid">
 
         <div class="movie-poster-col">
-              <img src="<?= e($coverImage->src) ?>"
-                  alt="<?= e($coverImage->alt) ?>"
+              <img src="<?= e($coverImage?->getSrc()) ?>"
+                  alt="<?= e($coverImage?->getAlt()) ?>"
                  class="poster-image">
         </div>
 
@@ -78,8 +78,8 @@ $actors = $show->getActors();
 
                     <div class="platforms-list">
                         <?php foreach ($streamings as $streaming): ?>
-                            <div class="platform-icon" title="<?= e($streaming->name) ?>">
-                                <?= e($streaming->logoImage->src) ?>
+                            <div class="platform-icon" title="<?= e($streaming->getName()) ?>">
+                                <?= e($streaming->getLogoImage()?->getSrc()) ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -96,13 +96,13 @@ $actors = $show->getActors();
                 <?php if (! empty($director)): ?>
                     <div>
                         <span class="section-label">Reżyser</span>
-                        <div class="credit-name"><?= e($director->name) ?></div>
+                        <div class="credit-name"><?= e($director->getName()) ?></div>
                     </div>
                 <?php endif; ?>
                 <?php if (! empty($actors)): ?>
                     <div>
                         <span class="section-label">W rolach głównych</span>
-                        <div class="credit-name"><?= e(implode(', ', array_map(fn($actor) => $actor->name ?? '', $actors))) ?></div>
+                        <div class="credit-name"><?= e(implode(', ', array_map(fn($actor) => $actor->getName() ?? '', $actors))) ?></div>
                     </div>
                 <?php endif; ?>
             </div>

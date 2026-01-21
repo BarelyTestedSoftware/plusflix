@@ -29,18 +29,18 @@ $pdo = new PDO(\App\Service\Config::get('db_dsn'), \App\Service\Config::get('db_
 $stmt = $pdo->query('SELECT id, name FROM person WHERE type = 1 ORDER BY name');
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $actor = new Person();
-    $actor->id = (int)$row['id'];
-    $actor->name = $row['name'];
-    $actor->type = 0;
+    $actor->setId((int)$row['id']);
+    $actor->setName($row['name']);
+    $actor->setType(0);
     $actors[] = $actor;
 }
 // Pobierz reżyserów (type=1)
 $stmt = $pdo->query('SELECT id, name FROM person WHERE type = 2 ORDER BY name');
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $director = new Person();
-    $director->id = (int)$row['id'];
-    $director->name = $row['name'];
-    $director->type = 1;
+    $director->setId((int)$row['id']);
+    $director->setName($row['name']);
+    $director->setType(1);
     $directors[] = $director;
 }
 
@@ -53,8 +53,8 @@ foreach (Category::findAll() as $cat) {
 $stmt = $pdo->query('SELECT id, name FROM streaming ORDER BY name');
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $streaming = new Streaming();
-    $streaming->id = (int)$row['id'];
-    $streaming->name = $row['name'];
+    $streaming->setId((int)$row['id']);
+    $streaming->setName($row['name']);
     $streamings[] = $streaming;
 }
 

@@ -16,21 +16,21 @@ for ($i = 1; $i <= 6; $i++) {
     $show->setNumberOfEpisodes(10 + ($i * 2));
     
     $coverImage = new \App\Model\Media();
-    $coverImage->id = $i;
-    $coverImage->src = "https://m.media-amazon.com/images/M/MV5BMDBmYTZjNjUtN2M1MS00MTQ2LTk2ODgtNzc2M2QyZGE5NTVjXkEyXkFqcGdeQXVyNzAwMjU2MTY@._V1_.jpg";
-    $coverImage->alt = "Cover Serial " . $i;
+    $coverImage->setId($i);
+    $coverImage->setSrc("https://m.media-amazon.com/images/M/MV5BMDBmYTZjNjUtN2M1MS00MTQ2LTk2ODgtNzc2M2QyZGE5NTVjXkEyXkFqcGdeQXVyNzAwMjU2MTY@._V1_.jpg");
+    $coverImage->setAlt("Cover Serial " . $i);
     $show->setCoverImage($coverImage);
     
     $backgroundImage = new \App\Model\Media();
-    $backgroundImage->id = 100 + $i;
-    $backgroundImage->src = "https://www.hindustantimes.com/ht-img/img/2023/07/22/550x309/oppenheimer_1690033428720_1690033428887.jpg";
-    $backgroundImage->alt = "Background Serial " . $i;
+    $backgroundImage->setId(100 + $i);
+    $backgroundImage->setSrc("https://www.hindustantimes.com/ht-img/img/2023/07/22/550x309/oppenheimer_1690033428720_1690033428887.jpg");
+    $backgroundImage->setAlt("Background Serial " . $i);
     $show->setBackgroundImage($backgroundImage);
     
     $director = new \App\Model\Person();
-    $director->id = $i;
-    $director->name = "Reżyser " . $i;
-    $director->type = 1;
+    $director->setId($i);
+    $director->setName("Reżyser " . $i);
+    $director->setType(1);
     $show->setDirector($director);
 
     $show->setActors([]);
@@ -57,21 +57,21 @@ $show->setProductionDate('2023-07-21');
 $show->setNumberOfEpisodes(1);
 
 $coverImage = new \App\Model\Media();
-$coverImage->id = 1;
-$coverImage->src = 'https://image.tmdb.org/t/p/w600_and_h900_bestv2/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg';
-$coverImage->alt = 'Plakat Oppenheimer';
+$coverImage->setId(1);
+$coverImage->setSrc('https://image.tmdb.org/t/p/w600_and_h900_bestv2/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg');
+$coverImage->setAlt('Plakat Oppenheimer');
 $show->setCoverImage($coverImage);
 
 $backgroundImage = new \App\Model\Media();
-$backgroundImage->id = 2;
-$backgroundImage->src = 'https://www.hindustantimes.com/ht-img/img/2023/07/22/550x309/oppenheimer_1690033428720_1690033428887.jpg';
-$backgroundImage->alt = 'Tło Oppenheimer';
+$backgroundImage->setId(2);
+$backgroundImage->setSrc('https://www.hindustantimes.com/ht-img/img/2023/07/22/550x309/oppenheimer_1690033428720_1690033428887.jpg');
+$backgroundImage->setAlt('Tło Oppenheimer');
 $show->setBackgroundImage($backgroundImage);
 
 $director = new \App\Model\Person();
-$director->id = 1;
-$director->name = 'Christopher Nolan';
-$director->type = 1;
+$director->setId(1);
+$director->setName('Christopher Nolan');
+$director->setType(1);
 $show->setDirector($director);
 
 $actors = [];
@@ -81,9 +81,9 @@ foreach ([
     ['id' => 12, 'name' => 'Matt Damon'],
 ] as $actorData) {
     $actor = new \App\Model\Person();
-    $actor->id = $actorData['id'];
-    $actor->name = $actorData['name'];
-    $actor->type = 0;
+    $actor->setId($actorData['id']);
+    $actor->setName($actorData['name']);
+    $actor->setType(0);
     $actors[] = $actor;
 }
 $show->setActors($actors);
@@ -96,14 +96,14 @@ foreach ([
     ['id' => 4, 'name' => 'Prime Video', 'logo' => 'P'],
 ] as $streamingData) {
     $streaming = new \App\Model\Streaming();
-    $streaming->id = $streamingData['id'];
-    $streaming->name = $streamingData['name'];
+    $streaming->setId($streamingData['id']);
+    $streaming->setName($streamingData['name']);
 
     $logo = new \App\Model\Media();
-    $logo->id = 100 + $streamingData['id'];
-    $logo->src = $streamingData['logo']; // uproszczony placeholder
-    $logo->alt = $streamingData['name'];
-    $streaming->logoImage = $logo;
+    $logo->setId(100 + $streamingData['id']);
+    $logo->setSrc($streamingData['logo']); // uproszczony placeholder
+    $logo->setAlt($streamingData['name']);
+    $streaming->setLogoImage($logo);
 
     $streamings[] = $streaming;
 }

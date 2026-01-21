@@ -67,10 +67,10 @@ $header = 'Dodaj produkcję';
 				<label for="show_director" class="form-label">Reżyser</label>
 				<?php component('select-with-search', [
 					'name' => 'show[director]',
-					'options' => array_reduce($params['directors'] ?? [], function($out, $dir) { $out[$dir->id] = $dir->name; return $out; }, []),
+					'options' => array_reduce($params['directors'] ?? [], function($out, $dir) { $out[$dir->getId()] = $dir->getName(); return $out; }, []),
 					'placeholder' => 'Wybierz reżysera',
 					'required' => false,
-					'selected' => $show->getDirector()?->id ?? '',
+					'selected' => $show->getDirector()?->getId() ?? '',
 					'allowCustom' => true,
 					'multiple' => false,
 				]); ?>
@@ -79,11 +79,11 @@ $header = 'Dodaj produkcję';
 				<label for="show_actors" class="form-label">Aktorzy</label>
 				<?php component('select-with-search', [
 					'name' => 'show[actors][]',
-					'options' => array_reduce($params['actors'] ?? [], function($out, $actor) { $out[$actor->id] = $actor->name; return $out; }, []),
+					'options' => array_reduce($params['actors'] ?? [], function($out, $actor) { $out[$actor->getId()] = $actor->getName(); return $out; }, []),
 					'placeholder' => 'Wybierz aktorów',
 					'required' => false,
 					'allowCustom' => true,
-					'selected' => array_map(function($actor) { return $actor->id; }, $show->getActors()),
+					'selected' => array_map(function($actor) { return $actor->getId(); }, $show->getActors()),
 				]); ?>
 			</div>
 			<div class="form-group">
@@ -101,11 +101,11 @@ $header = 'Dodaj produkcję';
 				<label for="show_streamings" class="form-label">Platformy streamingowe</label>
 				<?php component('select-with-search', [
 					'name' => 'show[streamings][]',
-					'options' => array_reduce($params['streamings'] ?? [], function($out, $stream) { $out[$stream->id] = $stream->name; return $out; }, []),
+					'options' => array_reduce($params['streamings'] ?? [], function($out, $stream) { $out[$stream->getId()] = $stream->getName(); return $out; }, []),
 					'placeholder' => 'Wybierz platformy',
 					'required' => false,
 					'allowCustom' => false,
-					'selected' => array_map(function($stream) { return $stream->id; }, $show->getStreamings()),
+					'selected' => array_map(function($stream) { return $stream->getId(); }, $show->getStreamings()),
 				]); ?>
 			</div>
 			<div class="form-group">
@@ -114,7 +114,7 @@ $header = 'Dodaj produkcję';
 					'name' => 'show[coverImage]',
 					'id' => 'show_coverImage',
 					'placeholder' => 'URL do okładki',
-					'value' => $show->getCoverImage()?->src ?? '',
+					'value' => $show->getCoverImage()?->getSrc() ?? '',
 				]); ?>
 				<div class="image-preview" data-source-input="show_coverImage">
 					<p class="image-preview__hint">Podgląd okładki pojawi się po wpisaniu adresu URL.</p>
@@ -127,7 +127,7 @@ $header = 'Dodaj produkcję';
 					'name' => 'show[backgroundImage]',
 					'id' => 'show_backgroundImage',
 					'placeholder' => 'URL do tła',
-					'value' => $show->getBackgroundImage()?->src ?? '',
+					'value' => $show->getBackgroundImage()?->getSrc() ?? '',
 				]); ?>
 				<div class="image-preview" data-source-input="show_backgroundImage">
 					<p class="image-preview__hint">Podgląd tła pojawi się po wpisaniu adresu URL.</p>

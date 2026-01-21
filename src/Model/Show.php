@@ -197,7 +197,7 @@ class Show
         if ($directorId !== null) {
             // TODO: Załaduj pełny obiekt Person
             $director = new Person();
-            $director->id = ((int) $directorId);
+            $director->setId((int) $directorId);
             $this->setDirector($director);
         }
 
@@ -282,9 +282,9 @@ class Show
         
         // TODO: Obsługa nowych zdjęć - gdy będzie MediaController, zmień na rzeczywiste tworzenie Media
         // TODO: Jeśli cover lub background image zostały zmienione, stwórz nowy rekord w media
-        $coverImageId = $this->coverImage?->id ?? null;
-        $backgroundImageId = $this->backgroundImage?->id ?? null;
-        $directorId = $this->director?->id ?? null;
+        $coverImageId = $this->getCoverImage()?->getId();
+        $backgroundImageId = $this->getBackgroundImage()?->getId();
+        $directorId = $this->getDirector()?->getId();
         
         if (! $this->getId()) {
             $sql = "INSERT INTO show (title, description, type, production_date, number_of_episodes, cover_image_id, background_image_id, director_id)
@@ -346,25 +346,25 @@ class Show
 
         if (! empty($row['cover_id'])) {
             $media = new Media();
-            $media->id = (int) $row['cover_id'];
-            $media->src = $row['cover_src'] ?? '';
-            $media->alt = $row['cover_alt'] ?? '';
+            $media->setId((int) $row['cover_id']);
+            $media->setSrc($row['cover_src'] ?? '');
+            $media->setAlt($row['cover_alt'] ?? '');
             $show->setCoverImage($media);
         }
 
         if (! empty($row['bg_id'])) {
             $media = new Media();
-            $media->id = (int) $row['bg_id'];
-            $media->src = $row['bg_src'] ?? '';
-            $media->alt = $row['bg_alt'] ?? '';
+            $media->setId((int) $row['bg_id']);
+            $media->setSrc($row['bg_src'] ?? '');
+            $media->setAlt($row['bg_alt'] ?? '');
             $show->setBackgroundImage($media);
         }
 
         if (! empty($row['director_id'])) {
             $director = new Person();
-            $director->id = (int) $row['director_id'];
-            $director->name = $row['director_name'] ?? '';
-            $director->type = isset($row['director_type']) ? (int) $row['director_type'] : 1;
+            $director->setId((int) $row['director_id']);
+            $director->setName($row['director_name'] ?? '');
+            $director->setType(isset($row['director_type']) ? (int) $row['director_type'] : 1);
             $show->setDirector($director);
         }
 
@@ -435,9 +435,9 @@ class Show
                 continue;
             }
             $actor = new Person();
-            $actor->id = (int) $row['id'];
-            $actor->name = $row['name'] ?? '';
-            $actor->type = isset($row['type']) ? (int) $row['type'] : 0;
+            $actor->setId((int) $row['id']);
+            $actor->setName($row['name'] ?? '');
+            $actor->setType(isset($row['type']) ? (int) $row['type'] : 0);
 
             $current = $showsById[$showId]->getActors();
             $current[] = $actor;
@@ -472,15 +472,15 @@ class Show
             }
 
             $streaming = new Streaming();
-            $streaming->id = (int) $row['id'];
-            $streaming->name = $row['name'] ?? '';
+            $streaming->setId((int) $row['id']);
+            $streaming->setName($row['name'] ?? '');
 
             if (! empty($row['logo_id'])) {
                 $logo = new Media();
-                $logo->id = (int) $row['logo_id'];
-                $logo->src = $row['logo_src'] ?? '';
-                $logo->alt = $row['logo_alt'] ?? '';
-                $streaming->logoImage = $logo;
+                $logo->setId((int) $row['logo_id']);
+                $logo->setSrc($row['logo_src'] ?? '');
+                $logo->setAlt($row['logo_alt'] ?? '');
+                $streaming->setLogoImage($logo);
             }
 
             $current = $showsById[$showId]->getStreamings();

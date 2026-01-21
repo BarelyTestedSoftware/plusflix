@@ -35,19 +35,19 @@ class ShowController
         // Obsługa zdjęć
         if (!empty($data['coverImage'])) {
             $media = new Media();
-            $media->src = $data['coverImage'];
-            $media->alt = $data['title'] . ' - Cover Image';
+            $media->setSrc($data['coverImage']);
+            $media->setAlt($data['title'] . ' - Cover Image');
             // TODO: Zmień na rzeczywisty zapis do bazy przez MediaController::store()
-            $media->id = 1; // mockowany ID
+            $media->setId(1); // mockowany ID
             $show->setCoverImage($media);
         }
         
         if (!empty($data['backgroundImage'])) {
             $media = new Media();
-            $media->src = $data['backgroundImage'];
-            $media->alt = ''; // zdjęcia dekoracyjne powinny mieć pusty alt
+            $media->setSrc($data['backgroundImage']);
+            $media->setAlt(''); // zdjęcia dekoracyjne powinny mieć pusty alt
             // TODO: Zmień na rzeczywisty zapis do bazy przez MediaController::store()
-            $media->id = 1; // mockowany ID
+            $media->setId(1); // mockowany ID
             $show->setBackgroundImage($media);
         }
         
@@ -80,19 +80,19 @@ class ShowController
         // Obsługa zdjęć
         if (!empty($data['coverImage'])) {
             $media = new Media();
-            $media->src = $data['coverImage'];
-            $media->alt = $data['title'] . ' - Cover Image';
+            $media->setSrc($data['coverImage']);
+            $media->setAlt($data['title'] . ' - Cover Image');
             // TODO: Zmień na rzeczywisty zapis do bazy przez MediaController::store()
-            $media->id = 1; // mockowany ID
+            $media->setId(1); // mockowany ID
             $show->setCoverImage($media);
         }
         
         if (!empty($data['backgroundImage'])) {
             $media = new Media();
-            $media->src = $data['backgroundImage'];
-            $media->alt = ''; // zdjęcia dekoracyjne powinny mieć pusty alt
+            $media->setSrc($data['backgroundImage']);
+            $media->setAlt(''); // zdjęcia dekoracyjne powinny mieć pusty alt
             // TODO: Zmień na rzeczywisty zapis do bazy przez MediaController::store()
-            $media->id = 1; // mockowany ID
+            $media->setId(1); // mockowany ID
             $show->setBackgroundImage($media);
         }
 
