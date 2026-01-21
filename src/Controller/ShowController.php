@@ -21,7 +21,7 @@ class ShowController
         return ['show' => $show];
     }
 
-    public function store(array $data, Router $router): void {
+    public function store(array $data, Router $router): int {
         if (empty($data['title'])) {
             throw new \InvalidArgumentException("Tytuł nie może być pusty.");
         }
@@ -53,6 +53,8 @@ class ShowController
         
         $show->save();
         $router->redirect('/admin/show/');
+
+        return $show->getId();
     }
 
     public function edit (int $id): array {
