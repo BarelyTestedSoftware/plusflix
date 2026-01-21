@@ -21,12 +21,14 @@ class CategoryController
         return ['category' => $category];
     }
 
-    public function store(array $data, Router $router): void
+    public function store(array $data, Router $router): int
     {
         $category = Category::fromArray($data);
         // @todo: walidacja
         $category->save();
         $router->redirect('/admin/category');
+
+        return $category->getId();
     }
 
     public function edit(int $id): array
