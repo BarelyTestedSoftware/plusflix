@@ -11,7 +11,6 @@ use App\Model\Show;
 /** @var \App\Service\Router $router */
 
 $controller = new ShowController();
-
 // Pobierz listę produkcji (obiekty)
 $showsObj = $controller->getAll()["shows"];
 
