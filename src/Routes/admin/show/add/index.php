@@ -2,6 +2,9 @@
 /** Route: /admin/show/add ...*/
 
 use App\Controller\ShowController;
+use App\Controller\PersonController;
+use App\Controller\CategoryController;
+use App\Controller\StreamingController;
 
 /** @var \App\Service\Router $router */
 
@@ -12,51 +15,17 @@ if ($router->isPost()) {
     return null;
 }
 
+$personController = new PersonController();
+$categoryController = new CategoryController();
+$streamingController = new StreamingController();
 
-use App\Model\Person;
-use App\Model\Category;
-use App\Model\Streaming;
+$persons = $personController->getAll()['persons'] ?? [];
+$actors = array_values(array_filter($persons, fn($person) => $person->getType() === 1));
+$directors = array_values(array_filter($persons, fn($person) => $person->getType() === 2));
 
+$categories = $categoryController->getAll()['categories'] ?? [];
 
-$actors = [];
-$directors = [];
-$categories = [];
-$streamings = [];
-
-
-$pdo = new PDO(\App\Service\Config::get('db_dsn'), \App\Service\Config::get('db_user'), \App\Service\Config::get('db_pass'));
-// Pobierz aktorów (type=0)
-$stmt = $pdo->query('SELECT id, name FROM person WHERE type = 1 ORDER BY name');
-while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    $actor = new Person();
-    $actor->setId((int)$row['id']);
-    $actor->setName($row['name']);
-    $actor->setType(0);
-    $actors[] = $actor;
-}
-// Pobierz reżyserów (type=1)
-$stmt = $pdo->query('SELECT id, name FROM person WHERE type = 2 ORDER BY name');
-while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    $director = new Person();
-    $director->setId((int)$row['id']);
-    $director->setName($row['name']);
-    $director->setType(1);
-    $directors[] = $director;
-}
-
-// Pobierz kategorie
-foreach (Category::findAll() as $cat) {
-    $categories[] = $cat;
-}
-
-// Pobierz platformy streamingowe
-$stmt = $pdo->query('SELECT id, name FROM streaming ORDER BY name');
-while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    $streaming = new Streaming();
-    $streaming->setId((int)$row['id']);
-    $streaming->setName($row['name']);
-    $streamings[] = $streaming;
-}
+$streamings = $streamingController->getAll()['streamings'] ?? [];
 
 return [
     'template' => 'admin/show-form',
@@ -68,5 +37,5 @@ return [
         'categories' => $categories,
         'streamings' => $streamings
     ],
-    'title' => 'dodaj produkcję'
+    'title' => 'Dodaj produkcję'
 ];

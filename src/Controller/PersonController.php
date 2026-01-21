@@ -28,7 +28,7 @@ class PersonController
             throw new \InvalidArgumentException("Imię i nazwisko nie mogą być puste.");
         }
 
-        if (isset($data['type']) && !in_array((int)$data['type'], [0, 1])) {
+        if (isset($data['type']) && !in_array((int)$data['type'], [1, 2])) {
             throw new \InvalidArgumentException("Nieprawidłowy typ osoby.");
         }
         

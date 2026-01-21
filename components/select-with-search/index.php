@@ -39,7 +39,7 @@ if ($multiple) {
 }
 ?>
 
-<div class="select-with-search" data-component="select-with-search" data-multiselect="<?= $multiple ? 'true' : 'false' ?>">
+<div class="select-with-search" data-component="select-with-search" data-multiselect="<?= $multiple ? 'true' : 'false' ?>" data-name="<?= e($name) ?>">
     <input 
         type="text" 
         id="<?= e($name) ?>"
@@ -59,6 +59,17 @@ if ($multiple) {
                 <?= e($optLabel) ?>
             </li>
         <?php endforeach; ?>
+        <?php if ($multiple): ?>
+            <?php foreach ($selectedOptions as $optValue => $optLabel): ?>
+                <li 
+                    class="select-with-search__option" 
+                    data-value="<?= e($optValue) ?>" 
+                    hidden
+                >
+                    <?= e($optLabel) ?>
+                </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </ul>
     <?php if ($multiple): ?>
         <div class="select-with-search__pills">
@@ -91,9 +102,11 @@ if ($multiple) {
         const allowCustom = input.dataset.allowCustom === 'true';
         const isMulti = component.dataset.multiselect === 'true';
         const hiddenInput = component.querySelector('input[type="hidden"]');
-        
-        // Pobierz name z pierwszego hidden inputu lub z input
-        let name = hiddenInput?.name || input.name;
+        const fieldName = component.dataset.name;
+
+        if (hiddenInput && fieldName) {
+            hiddenInput.name = fieldName;
+        }
         
         let activeIndex = -1;
         // Pobierz już zaznaczone wartości z hidden inputów
@@ -111,9 +124,13 @@ if ($multiple) {
                 dropdown.hidden = true;
                 activeIndex = -1;
                 
-                // Dla single-select z allowCustom, zapisz wartość jeśli coś wpisano
-                if (!isMulti && allowCustom && input.value.trim()) {
-                    hiddenInput.value = input.value.trim();
+                if (allowCustom && input.value.trim()) {
+                    if (!isMulti) {
+                        hiddenInput.value = input.value.trim();
+                    } else {
+                        addPill(input.value.trim(), input.value.trim());
+                        input.value = '';
+                    }
                 }
             }
         });
@@ -128,6 +145,13 @@ if ($multiple) {
                 hiddenInput.value = input.value.trim();
             } else if (!isMulti && allowCustom && !input.value.trim()) {
                 hiddenInput.value = '';
+            }
+        });
+
+        input.addEventListener('blur', function() {
+            if (allowCustom && isMulti && input.value.trim()) {
+                addPill(input.value.trim(), input.value.trim());
+                input.value = '';
             }
         });
 
@@ -251,7 +275,7 @@ if ($multiple) {
             selected.forEach(function(value) {
                 const hidden = document.createElement('input');
                 hidden.type = 'hidden';
-                hidden.name = name;
+                hidden.name = fieldName;
                 hidden.value = value;
                 component.appendChild(hidden);
             });

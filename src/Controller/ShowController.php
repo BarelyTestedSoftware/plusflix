@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Exception\NotFoundException;
 use App\Model\Show;
 use App\Model\Media;
+use App\Model\Person;
+use App\Service\Config;
 use App\Service\Router;
 
 class ShowController
@@ -34,24 +36,55 @@ class ShowController
         
         // Obsługa zdjęć
         if (!empty($data['coverImage'])) {
-            $media = new Media();
-            $media->setSrc($data['coverImage']);
-            $media->setAlt($data['title'] . ' - Cover Image');
-            // TODO: Zmień na rzeczywisty zapis do bazy przez MediaController::store()
-            $media->setId(1); // mockowany ID
-            $show->setCoverImage($media);
+            $coverMedia = $this->persistMedia($data['coverImage'], ($data['title'] ?? '') . ' - Cover Image');
+            $show->setCoverImage($coverMedia);
         }
         
         if (!empty($data['backgroundImage'])) {
-            $media = new Media();
-            $media->setSrc($data['backgroundImage']);
-            $media->setAlt(''); // zdjęcia dekoracyjne powinny mieć pusty alt
-            // TODO: Zmień na rzeczywisty zapis do bazy przez MediaController::store()
-            $media->setId(1); // mockowany ID
-            $show->setBackgroundImage($media);
+            $backgroundMedia = $this->persistMedia($data['backgroundImage'], ''); // zdjęcia dekoracyjne: pusty alt
+            $show->setBackgroundImage($backgroundMedia);
         }
+
+        // Obsługa reżysera i aktorów
+        $directorValue = $data['director'] ?? null;
+        if ($directorValue) {
+            $director = $this->resolvePerson($directorValue, 2); // 2 = director
+            $show->setDirector($director);
+        }
+
+        $actorValues = $data['actors'] ?? [];
+        $actors = [];
+        if (is_array($actorValues)) {
+            foreach ($actorValues as $rawActor) {
+                if ($rawActor === '' || $rawActor === null) {
+                    continue;
+                }
+                $actors[] = $this->resolvePerson($rawActor, 1); // 1 = actor
+            }
+        }
+        $show->setActors($actors);
         
         $show->save();
+
+        $this->syncActors($show->getId(), $actors);
+        // Kategorie i platformy streamingowe (pivot tables)
+        $categoryIds = [];
+        if (!empty($data['categories']) && is_array($data['categories'])) {
+            foreach ($data['categories'] as $cid) {
+                if ($cid === '' || $cid === null) { continue; }
+                $categoryIds[] = (int)$cid;
+            }
+        }
+        $this->syncCategories($show->getId(), $categoryIds);
+
+        $streamingIds = [];
+        if (!empty($data['streamings']) && is_array($data['streamings'])) {
+            foreach ($data['streamings'] as $sid) {
+                if ($sid === '' || $sid === null) { continue; }
+                $streamingIds[] = (int)$sid;
+            }
+        }
+        $this->syncStreamings($show->getId(), $streamingIds);
         $router->redirect('/admin/show/');
 
         return $show->getId();
@@ -79,24 +112,56 @@ class ShowController
         
         // Obsługa zdjęć
         if (!empty($data['coverImage'])) {
-            $media = new Media();
-            $media->setSrc($data['coverImage']);
-            $media->setAlt($data['title'] . ' - Cover Image');
-            // TODO: Zmień na rzeczywisty zapis do bazy przez MediaController::store()
-            $media->setId(1); // mockowany ID
-            $show->setCoverImage($media);
+            $coverMedia = $this->persistMedia($data['coverImage'], ($data['title'] ?? '') . ' - Cover Image');
+            $show->setCoverImage($coverMedia);
         }
         
         if (!empty($data['backgroundImage'])) {
-            $media = new Media();
-            $media->setSrc($data['backgroundImage']);
-            $media->setAlt(''); // zdjęcia dekoracyjne powinny mieć pusty alt
-            // TODO: Zmień na rzeczywisty zapis do bazy przez MediaController::store()
-            $media->setId(1); // mockowany ID
-            $show->setBackgroundImage($media);
+            $backgroundMedia = $this->persistMedia($data['backgroundImage'], '');
+            $show->setBackgroundImage($backgroundMedia);
         }
 
+        // Obsługa reżysera i aktorów
+        $directorValue = $data['director'] ?? null;
+        if ($directorValue) {
+            $director = $this->resolvePerson($directorValue, 2);
+            $show->setDirector($director);
+        } else {
+            $show->setDirector(null);
+        }
+
+        $actorValues = $data['actors'] ?? [];
+        $actors = [];
+        if (is_array($actorValues)) {
+            foreach ($actorValues as $rawActor) {
+                if ($rawActor === '' || $rawActor === null) {
+                    continue;
+                }
+                $actors[] = $this->resolvePerson($rawActor, 1);
+            }
+        }
+        $show->setActors($actors);
+
         $show->save();
+        $this->syncActors($show->getId(), $actors);
+
+        $categoryIds = [];
+        if (!empty($data['categories']) && is_array($data['categories'])) {
+            foreach ($data['categories'] as $cid) {
+                if ($cid === '' || $cid === null) { continue; }
+                $categoryIds[] = (int)$cid;
+            }
+        }
+        $this->syncCategories($show->getId(), $categoryIds);
+
+        $streamingIds = [];
+        if (!empty($data['streamings']) && is_array($data['streamings'])) {
+            foreach ($data['streamings'] as $sid) {
+                if ($sid === '' || $sid === null) { continue; }
+                $streamingIds[] = (int)$sid;
+            }
+        }
+        $this->syncStreamings($show->getId(), $streamingIds);
         $router->redirect('/admin/show/');
     }
 
@@ -128,7 +193,8 @@ class ShowController
         if (!empty($filters['q'])) {
             $query = strtolower($filters['q']);
             $shows = array_filter($shows, function($show) use ($query) {
-                return strpos(strtolower($show->getTitle()), $query) !== false;
+                $title = strtolower($show->getTitle() ?? '');
+                return strpos($title, $query) !== false;
             });
         }
         
@@ -142,7 +208,11 @@ class ShowController
         if (!empty($filters['year'])) {
             $year = (int)$filters['year'];
             $shows = array_filter($shows, function($show) use ($year) {
-                $productionYear = (int)substr($show->getProductionDate(), 0, 4);
+                $productionDate = $show->getProductionDate();
+                if (! $productionDate) {
+                    return false;
+                }
+                $productionYear = (int)substr($productionDate, 0, 4);
                 return $productionYear === $year;
             });
         }
@@ -158,7 +228,7 @@ class ShowController
             $actorId = (int)$filters['actor'];
             $shows = array_filter($shows, function($show) use ($actorId) {
                 $actors = $show->getActors();
-                return !empty(array_filter($actors, fn($a) => $a->id === $actorId));
+                return !empty(array_filter($actors, fn($a) => $a->getId() === $actorId));
             });
         }
         
@@ -167,7 +237,7 @@ class ShowController
             $directorId = (int)$filters['director'];
             $shows = array_filter($shows, function($show) use ($directorId) {
                 $director = $show->getDirector();
-                return $director && $director->id === $directorId;
+                return $director && $director->getId() === $directorId;
             });
         }
         
@@ -184,5 +254,110 @@ class ShowController
         $shows = array_values($shows);
         
         return ['shows' => $shows];
+    }
+
+    private function persistMedia(string $src, string $alt): Media
+    {
+        $media = new Media();
+        $media->setSrc(trim($src));
+        $media->setAlt($alt);
+        $media->save();
+
+        return $media;
+    }
+
+    private function resolvePerson(mixed $value, int $type): Person
+    {
+        if (is_numeric($value)) {
+            $existing = Person::find((int) $value);
+            if ($existing) {
+                return $existing;
+            }
+        }
+
+        $name = is_string($value) ? trim($value) : '';
+        if ($name === '') {
+            throw new \InvalidArgumentException('Nazwa osoby nie może być pusta.');
+        }
+
+        // Try to find existing person by case-insensitive name and type
+        $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+        $stmt = $pdo->prepare('SELECT * FROM person WHERE LOWER(name) = LOWER(:name) AND type = :type LIMIT 1');
+        $stmt->execute(['name' => $name, 'type' => $type]);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($row) {
+            return Person::fromArray($row);
+        }
+
+        // Create new if not found
+        $person = new Person();
+        $person->setName($name);
+        $person->setType($type);
+        $person->save();
+
+        return $person;
+    }
+
+    /**
+     * @param Person[] $actors
+     */
+    private function syncActors(int $showId, array $actors): void
+    {
+        $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+
+        $delete = $pdo->prepare('DELETE FROM show_actor WHERE show_id = :show_id');
+        $delete->execute(['show_id' => $showId]);
+
+        if (empty($actors)) {
+            return;
+        }
+
+        $insert = $pdo->prepare('INSERT INTO show_actor (show_id, person_id) VALUES (:show_id, :person_id)');
+        foreach ($actors as $actor) {
+            $insert->execute([
+                'show_id' => $showId,
+                'person_id' => $actor->getId(),
+            ]);
+        }
+    }
+
+    private function syncCategories(int $showId, array $categoryIds): void
+    {
+        $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+
+        $delete = $pdo->prepare('DELETE FROM show_category WHERE show_id = :show_id');
+        $delete->execute(['show_id' => $showId]);
+
+        if (empty($categoryIds)) {
+            return;
+        }
+
+        $insert = $pdo->prepare('INSERT INTO show_category (show_id, category_id) VALUES (:show_id, :category_id)');
+        foreach ($categoryIds as $cid) {
+            $insert->execute([
+                'show_id' => $showId,
+                'category_id' => $cid,
+            ]);
+        }
+    }
+
+    private function syncStreamings(int $showId, array $streamingIds): void
+    {
+        $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+
+        $delete = $pdo->prepare('DELETE FROM show_streaming WHERE show_id = :show_id');
+        $delete->execute(['show_id' => $showId]);
+
+        if (empty($streamingIds)) {
+            return;
+        }
+
+        $insert = $pdo->prepare('INSERT INTO show_streaming (show_id, streaming_id) VALUES (:show_id, :streaming_id)');
+        foreach ($streamingIds as $sid) {
+            $insert->execute([
+                'show_id' => $showId,
+                'streaming_id' => $sid,
+            ]);
+        }
     }
 }

@@ -25,7 +25,7 @@ $show->setBackgroundImage($backgroundImage);
 $director = new \App\Model\Person();
 $director->setId(1);
 $director->setName('Christopher Nolan');
-$director->setType(1);
+$director->setType(2);
 $show->setDirector($director);
 
 $actors = [];
@@ -37,7 +37,7 @@ foreach ([
     $actor = new \App\Model\Person();
     $actor->setId($actorData['id']);
     $actor->setName($actorData['name']);
-    $actor->setType(0);
+    $actor->setType(1);
     $actors[] = $actor;
 }
 $show->setActors($actors);
