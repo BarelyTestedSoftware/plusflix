@@ -68,7 +68,12 @@ $description = $highlightedShow->getDescription();
     <div class="lists-wrapper">
 
         <?php
-        $categories = $params['groupedShows'] ?? ['Wszystkie filmy' => $params['shows']];
+        $categories = [
+                'Dramaty' => array_slice($shows, 0, 6),
+                'Sci-Fi i Fantasy' => array_slice($shows, 0, 6),
+                'Komedie'          => array_slice($shows, 0, 6),
+                'Horrory'          => array_slice($shows, 0, 6),
+        ];
         ?>
 
         <?php foreach ($categories as $categoryName => $categoryShows): ?>
