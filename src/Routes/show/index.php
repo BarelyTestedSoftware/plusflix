@@ -1,90 +1,31 @@
 <?php
+/**
+ * Route: /show?id=...
+ * To jest plik LOGIKI. Pobiera dane i przekazuje je do widoku.
+ */
 
-// Przykładowe dane pokazu do widoku „show” 
-// TODO: W przyszłości pobierać z bazy danych na podstawie ID z URL
-$show = new \App\Model\Show();
-$show->setId(1);
-$show->setTitle('Oppenheimer');
-$show->setDescription('Historia J. Roberta Oppenheimera i jego roli w rozwoju bomby atomowej.');
-$show->setType(1); // 1 = film
-$show->setProductionDate('2023-07-21');
-$show->setNumberOfEpisodes(1);
+use App\Controller\ShowController;
 
-$coverImage = new \App\Model\Media();
-$coverImage->id = 1;
-$coverImage->src = 'https://image.tmdb.org/t/p/w600_and_h900_bestv2/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg';
-$coverImage->alt = 'Plakat Oppenheimer';
-$show->setCoverImage($coverImage);
+// 1. Pobierz ID z adresu URL
+$id = $_GET['id'] ?? 0;
 
-$backgroundImage = new \App\Model\Media();
-$backgroundImage->id = 2;
-$backgroundImage->src = 'https://www.hindustantimes.com/ht-img/img/2023/07/22/550x309/oppenheimer_1690033428720_1690033428887.jpg';
-$backgroundImage->alt = 'Tło Oppenheimer';
-$show->setBackgroundImage($backgroundImage);
-
-$director = new \App\Model\Person();
-$director->id = 1;
-$director->name = 'Christopher Nolan';
-$director->type = 1;
-$show->setDirector($director);
-
-$actors = [];
-foreach ([
-    ['id' => 10, 'name' => 'Cillian Murphy'],
-    ['id' => 11, 'name' => 'Emily Blunt'],
-    ['id' => 12, 'name' => 'Matt Damon'],
-] as $actorData) {
-    $actor = new \App\Model\Person();
-    $actor->id = $actorData['id'];
-    $actor->name = $actorData['name'];
-    $actor->type = 0;
-    $actors[] = $actor;
+// 2. Jeśli brak ID, wróć na stronę główną
+if (!$id) {
+    header('Location: /');
+    exit;
 }
-$show->setActors($actors);
 
-$streamings = [];
-foreach ([
-    ['id' => 1, 'name' => 'Netflix', 'logo' => 'N'],
-    ['id' => 2, 'name' => 'HBO Max', 'logo' => 'H'],
-    ['id' => 3, 'name' => 'Apple TV+', 'logo' => 'A'],
-    ['id' => 4, 'name' => 'Prime Video', 'logo' => 'P'],
-] as $streamingData) {
-    $streaming = new \App\Model\Streaming();
-    $streaming->id = $streamingData['id'];
-    $streaming->name = $streamingData['name'];
+// 3. Użyj Kontrolera, żeby pobrać film z bazy
+$controller = new ShowController();
+$data = $controller->get((int)$id);
 
-    $logo = new \App\Model\Media();
-    $logo->id = 100 + $streamingData['id'];
-    $logo->src = $streamingData['logo']; // uproszczony placeholder
-    $logo->alt = $streamingData['name'];
-    $streaming->logoImage = $logo;
-
-    $streamings[] = $streaming;
-}
-$show->setStreamings($streamings);
-
-$categories = [];
-foreach ([
-    ['id' => 1, 'name' => 'Dramat'],
-    ['id' => 2, 'name' => 'Biografia'],
-] as $categoryData) {
-    $category = new \App\Model\Category();
-    $category->setId($categoryData['id']);
-    $category->setName($categoryData['name']);
-    $categories[] = $category;
-}
-$show->setCategories($categories);
-
-$show->setRating(4.0);
-$show->setNumberOfRatings(1287);
-
+// 4. Wyślij dane do pliku widoku (templates/show/index.php)
 return [
-    'template' => 'show',
+    'template' => 'show', // To wskazuje na folder templates/show
+    'title' => $data['show']->getTitle() . ' - Plusflix',
     'params' => [
         'router' => $router,
-        'show' => $show,
+        'show' => $data['show'] // Przekazujemy film do widoku
     ],
-    'title' => 'Szczegóły: Oppenheimer',
+    'bodyClass' => 'show-page',
 ];
-
-

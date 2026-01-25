@@ -5,6 +5,8 @@
  * Dla PHP built-in server: php -S localhost:3000 -t public public/index.php
  */
 
+
+
 // Obsługa statycznych plików dla PHP built-in server
 $uri = $_SERVER['REQUEST_URI'];
 $publicPath = __DIR__ . parse_url($uri, PHP_URL_PATH);

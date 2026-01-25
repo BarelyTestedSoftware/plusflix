@@ -235,33 +235,33 @@ class Show
         return $shows;
     }
 
-    public static function find(int $id): ?Show {
-        $pdo = new PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-        $sql = 'SELECT s.*, 
-                cover.id AS cover_id, cover.src AS cover_src, cover.alt AS cover_alt,
-                bg.id AS bg_id, bg.src AS bg_src, bg.alt AS bg_alt,
-                d.id AS director_id, d.name AS director_name, d.type AS director_type,
-                AVG(r.value) AS avg_rating, COUNT(r.id) AS rating_count
-            FROM show s
-            LEFT JOIN media cover ON cover.id = s.coverImageId
-            LEFT JOIN media bg ON bg.id = s.backgroundImageId
-            LEFT JOIN person d ON d.id = s.directorId
-            LEFT JOIN rating r ON r.showId = s.id
-            WHERE s.id = :id
-            GROUP BY s.id';
-        $statement = $pdo->prepare($sql);
-        $statement->execute(['id' => $id]);
+    public static function find(int $id): ?self
+    {
+        $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
 
-        $showArray = $statement->fetch(PDO::FETCH_ASSOC);
-        if (! $showArray) {
+
+        $stmt = $pdo->prepare('SELECT * FROM show WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$data) {
             return null;
         }
 
-        $show = self::hydrateBaseWithJoins($showArray);
+        $show = self::fromArray($data);
 
-        self::populateCategories($pdo, [$id => $show], [$id]);
-        self::populateActors($pdo, [$id => $show], [$id]);
-        self::populateStreamings($pdo, [$id => $show], [$id]);
+
+        $showsCollection = [$show->getId() => $show];
+        $ids = [$show->getId()];
+
+        self::populateCategories($pdo, $showsCollection, $ids);
+        self::populateActors($pdo, $showsCollection, $ids);
+
+        if (method_exists(self::class, 'populateStreamings')) {
+            self::populateStreamings($pdo, $showsCollection, $ids);
+        } else {
+            self::populateStreaming($pdo, $showsCollection, $ids);
+        }
 
         return $show;
     }
