@@ -1,15 +1,15 @@
 <?php
 /**
- * Route: /admin/person/delete
- * GET -> usunięcie osoby
+ * Route: /admin/streaming/delete
+ * GET -> usunięcie platformy
  * GET parameter: id
  */
 
-use App\Controller\PersonController;
+use App\Controller\StreamingController;
 
 /** @var \App\Service\Router $router */
 
-$controller = new PersonController();
+$controller = new StreamingController();
 
 if ($router->isGet()) {
     $id = $router->get('id');

@@ -11,13 +11,13 @@ use App\Controller\PersonController;
 $controller = new PersonController();
 
 if ($router->isPost()) {
-    // Przekazujemy płaski POST z polami: name, type
     $controller->store($_POST, $router);
+    return null;
 }
 
 return [
     'template' => 'admin/person-form',
     'params' => ['router' => $router],
-    'title' => 'dodaj osobę',
+    'title' => 'Dodaj osobę',
     'bodyClass' => 'person-add',
 ];

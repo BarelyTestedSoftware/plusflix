@@ -1,0 +1,40 @@
+/* Template-specific overrides */
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    padding-top: 8px;
+}
+
+.form-actions .btn {
+    min-width: 140px;
+}
+
+@media (max-width: var(--mobile-breakpoint)) {
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+    }
+}

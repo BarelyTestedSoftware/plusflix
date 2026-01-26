@@ -14,11 +14,11 @@ $controller = new PersonController();
 if ($router->isGet()) {
     $id = $router->get('id');
     if (null !== $id) {
-        $person = $controller->get((int)$id)["person"] ?? null;
+        $person = $controller->get($id)["person"];
         return [
             'template' => 'admin/person-form',
             'params' => ['router' => $router, 'person' => $person],
-            'title' => 'edytuj osobę',
+            'title' => 'Edytuj osobę',
             'bodyClass' => 'person-edit',
         ];
     }
@@ -27,6 +27,7 @@ if ($router->isGet()) {
 if ($router->isPost()) {
     $id = $router->get('id');
     if (null !== $id) {
-        $controller->update((int)$id, $_POST, $router);
+        $controller->update($id, $_POST, $router);
     }
+    return null;
 }

@@ -4,7 +4,7 @@ $person = $params['person'] ?? null;
 $isEdit = $person !== null;
 $header = $isEdit ? 'Edytuj osobę' : 'Dodaj osobę';
 $nameValue = $person ? $person->getName() : '';
-$typeValue = $person ? ($person->getType() ?? '') : '';
+$typeValue = $person ? $person->getType() : '';
 ?>
 
 <div class="admin-page">
@@ -21,7 +21,7 @@ $typeValue = $person ? ($person->getType() ?? '') : '';
 	<div class="admin-card">
 		<form method="POST" class="admin-form">
 			<div class="form-group">
-				<label for="person_name" class="form-label">Imię i nazwisko</label>
+				<label for="name" class="form-label">Imię i nazwisko</label>
 				<?php component('input-field', [
 					'name' => 'name',
 					'id' => 'person_name',
@@ -32,14 +32,14 @@ $typeValue = $person ? ($person->getType() ?? '') : '';
 			</div>
 
 			<div class="form-group">
-				<label for="person_type" class="form-label">Typ</label>
+				<label for="type" class="form-label">Typ</label>
 				<?php component('select', [
 					'name' => 'type',
 					'id' => 'person_type',
 					'options' => [1 => 'Aktor', 2 => 'Reżyser'],
+					'value' => $typeValue,
 					'placeholder' => 'Wybierz typ',
 					'required' => true,
-					'value' => $typeValue,
 				]); ?>
 			</div>
 
