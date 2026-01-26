@@ -19,10 +19,11 @@
 
             <?php
             $router = $params['router'] ?? null;
+            $currentUri = $router ? $router->getUri() : '';
                 component('search-bar', ['router' => $router]);
             ?>
             <a href="/login" class="btn btn-primary btn-sm" style="margin-left: 60px; text-decoration: none;">
-                <i class="fas fa-user" style="margin-right: 8px;"></i> Logowanie
+                <i class="fas fa-user" style="margin-right: 8px;"></i> <?= (strpos($currentUri, 'admin') === false) ? 'Zaloguj się' : 'Admin' ?>
             </a>
         </div>
     </header>

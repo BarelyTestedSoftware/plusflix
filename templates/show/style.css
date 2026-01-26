@@ -175,6 +175,10 @@
     margin-top: 18px;
 }
 
+.platform-icon {
+    background-size: contain;
+}
+
 .section-label {
     font-size: 14px;
     color: var(--text-muted);
