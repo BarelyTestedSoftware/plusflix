@@ -41,12 +41,13 @@ $filterOptions = $params['filterOptions'] ?? [];
                 <label for="filter-genre">
                     <i class="fas fa-masks-theater"></i> Gatunek
                 </label>
-                <?php component('select', [
+                <?php component('select-with-search', [
                     'name' => 'genre',
                     'options' => $filterOptions['genre'],
-                    'value' => $filters['genre'],
+                    'selected' => $filters['genre'] ?? '',
                     'placeholder' => 'Wybierz gatunek...',
-                    'onchange' => 'this.form.submit()'
+                    'allowCustom' => false,
+                    'multiple' => false,
                 ]); ?>
             </div>
 
@@ -83,12 +84,13 @@ $filterOptions = $params['filterOptions'] ?? [];
                 <label for="filter-actor">
                     <i class="fas fa-user"></i> Aktor
                 </label>
-                <?php component('select', [
+                <?php component('select-with-search', [
                     'name' => 'actor',
                     'options' => $filterOptions['actor'],
-                    'value' => $filters['actor'],
+                    'selected' => $filters['actor'] ?? '',
                     'placeholder' => 'Wybierz aktora...',
-                    'onchange' => 'this.form.submit()'
+                    'allowCustom' => false,
+                    'multiple' => false,
                 ]); ?>
             </div>
 
@@ -97,12 +99,13 @@ $filterOptions = $params['filterOptions'] ?? [];
                 <label for="filter-director">
                     <i class="fas fa-video"></i> Reżyser
                 </label>
-                <?php component('select', [
+                <?php component('select-with-search', [
                     'name' => 'director',
                     'options' => $filterOptions['director'],
-                    'value' => $filters['director'],
+                    'selected' => $filters['director'] ?? '',
                     'placeholder' => 'Wybierz reżysera...',
-                    'onchange' => 'this.form.submit()'
+                    'allowCustom' => false,
+                    'multiple' => false,
                 ]); ?>
             </div>
 
@@ -116,6 +119,20 @@ $filterOptions = $params['filterOptions'] ?? [];
         </div>
     </div>
     </form>
+
+    <script>
+    (function() {
+        const form = document.querySelector('.search-page form');
+        if (!form) return;
+        document.addEventListener('click', function(e) {
+            const opt = e.target.closest('.select-with-search__option');
+            if (opt && form.contains(opt)) {
+                // allow component to update hidden input first
+                setTimeout(() => form.submit(), 0);
+            }
+        });
+    })();
+    </script>
 
     <div class="search-results">
         <h2 class="results-count">

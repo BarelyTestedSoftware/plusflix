@@ -1,11 +1,28 @@
 <?php
 $q = $_GET['q'] ?? '';
 $f = $_GET['f'] ?? '';
+$router = $params['router'] ?? null;
+$currentUri = $router ? $router->getUri() : '';
+$shouldHide = strpos($currentUri, 'search') !== false;
+
+$classes = ['autofocused' => $f !== '', 'hidden' => $shouldHide];
+$classList = implode(' ', array_keys(array_filter($classes)));
 ?>
 
 <div class="search-bar">
-    <input class="<?= $f !== '' ? 'autofocused' : '' ?>" <?= $f !== '' ? 'autofocus' . ' onfocus="this.value=\'' . e($q) . '\'; goToSearch()"' : '' ?> onfocus="goToSearch()" <?= !$f ? 'value="' . e($q) . '"' : '' ?> oninput="debounceSearch(event)" onblur="submitSearch(event)" type="text" name="q" placeholder="Szukaj filmów, seriali..." autocomplete="off">
-    <button type="submit" class="search-btn">
+    <input 
+        class="<?= e($classList) ?>"
+        type="text"
+        name="q"
+        placeholder="Szukaj filmów, seriali..."
+        autocomplete="off"
+        value="<?= e($q) ?>"
+        <?= $f !== '' ? 'autofocus' : '' ?>
+        <?= $shouldHide ? 'disabled' : '' ?>
+        onfocus="goToSearch()"
+        oninput="debounceSearch(event)"
+        onblur="submitSearch(event)">
+    <button type="submit" class="search-btn <?= e($classList) ?>">
         <i class="fas fa-search"></i>
     </button>
 </div>

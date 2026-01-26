@@ -258,13 +258,14 @@ class Show
             GROUP BY s.id';
         $statement = $pdo->prepare($sql);
         $statement->execute(['id' => $id]);
+        
+        $data = $statement->fetch(\PDO::FETCH_ASSOC);
 
-        $showArray = $statement->fetch(PDO::FETCH_ASSOC);
-        if (! $showArray) {
+        if (!$data) {
             return null;
         }
 
-        $show = self::hydrateBaseWithJoins($showArray);
+        $show = self::hydrateBaseWithJoins($data);
 
         // Use a referenced map so populate* can mutate the show instance
         $showMap = [$id => $show];
@@ -277,11 +278,7 @@ class Show
 
     public function save(): void {
         $pdo = new PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-        //echo "\nhej\n";
-        //var_dump($this->toArray());
         
-        // TODO: Obsługa nowych zdjęć - gdy będzie MediaController, zmień na rzeczywiste tworzenie Media
-        // TODO: Jeśli cover lub background image zostały zmienione, stwórz nowy rekord w media
         $coverImageId = $this->getCoverImage()?->getId();
         $backgroundImageId = $this->getBackgroundImage()?->getId();
         $directorId = $this->getDirector()?->getId();
@@ -303,18 +300,6 @@ class Show
 
             $this->setId($pdo->lastInsertId());
         } else {
-                    //echo "\nhej\n";
-                    var_dump([
-                ':title' => $this->getTitle(),
-                ':description' => $this->getDescription(),
-                ':type' => intval($this->getType()),
-                ':production_date' => $this->getProductionDate(),
-                ':number_of_episodes' => intval($this->getNumberOfEpisodes()),
-                ':cover_image_id' => $coverImageId,
-                ':background_image_id' => $backgroundImageId,
-                ':director_id' => intval($directorId),
-                ':id' => $this->getId(),
-            ]);
             $sql = "UPDATE show SET title = :title, description = :description, type = :type,
                 production_date = :production_date, number_of_episodes = :number_of_episodes,
                 cover_image_id = :cover_image_id, background_image_id = :background_image_id,

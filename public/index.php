@@ -5,12 +5,12 @@
  * Dla PHP built-in server: php -S localhost:3000 -t public public/index.php
  */
 
-// Obsługa statycznych plików dla PHP built-in server
+
+
 $uri = $_SERVER['REQUEST_URI'];
 $publicPath = __DIR__ . parse_url($uri, PHP_URL_PATH);
 
 if (php_sapi_name() === 'cli-server') {
-    // Jeśli to istniejący plik statyczny - serwuj go
     if (is_file($publicPath) && !preg_match('/\.php$/', $publicPath)) {
         return false;
     }

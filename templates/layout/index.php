@@ -18,11 +18,13 @@
             <a href="/" class="logo">Plusflix</a>
 
             <?php
-            $currentUri = filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL) ?? '';
-            if (strpos($currentUri, '/search') === false) {
-                component('search-bar');
-            }
+            $router = $params['router'] ?? null;
+            $currentUri = $router ? $router->getUri() : '';
+                component('search-bar', ['router' => $router]);
             ?>
+            <a href="/login" class="btn btn-primary btn-sm" style="margin-left: 60px; text-decoration: none;">
+                <i class="fas fa-user" style="margin-right: 8px;"></i> <?= (strpos($currentUri, 'admin') === false) ? 'Zaloguj się' : 'Admin' ?>
+            </a>
         </div>
     </header>
 </nav>

@@ -4,6 +4,10 @@
  * Strona wyszukiwania z filtrami
  */
 
+use App\Controller\ShowController;
+use App\Controller\PersonController;
+use App\Controller\CategoryController;
+
 // Pobierz parametry wyszukiwania i filtrów
 $query = $router->get('q') ?? '';
 $typeFilter = $router->get('type') ?? '';
@@ -23,49 +27,70 @@ if ($yearFilter) $filters['year'] = $yearFilter;
 if ($ratingFilter) $filters['rating'] = $ratingFilter;
 if ($genreFilter) $filters['genre'] = $genreFilter;
 
-// Użyj ShowController do wyszukiwania i filtrowania
-$showController = new \App\Controller\ShowController();
+$showController = new ShowController();
+$personController = new PersonController();
+$categoryController = new CategoryController();
+
+// Dane do listy wyników
 $shows = $showController->search($filters)['shows'];
 
-// TODO: Pobierać z bazy danych zamiast hardkodowania
-// Przygotuj listy opcji dla filtrów
+// Dane pomocnicze do filtrów
+$allShows = $showController->getAll()['shows'];
+$people = $personController->getAll()['persons'] ?? [];
+$categories = $categoryController->getAll()['categories'] ?? [];
+
+// Opcje typu
 $typeOptions = [
     '' => 'Wszystkie',
     '1' => 'Film',
-    '2' => 'Serial'
+    '2' => 'Serial',
 ];
 
+// Opcje aktorów i reżyserów
 $actorOptions = ['' => 'Wszyscy aktorzy'];
-for ($i = 0; $i < 10; $i++) {
-    $actorOptions[(100 + $i)] = 'Aktor ' . chr(65 + $i);
-}
-
 $directorOptions = ['' => 'Wszyscy reżyserzy'];
-for ($i = 0; $i < 10; $i++) {
-    $directorOptions[($i + 1)] = 'Reżyser ' . chr(65 + $i);
+foreach ($people as $person) {
+    $personId = $person->getId();
+    $personName = $person->getName() ?? '';
+    $type = (int) ($person->getType() ?? 0);
+    if ($type === 1) {
+        $actorOptions[$personId] = $personName;
+    } elseif ($type === 2) {
+        $directorOptions[$personId] = $personName;
+    }
 }
 
+// Opcje lat produkcji (na podstawie wszystkich produkcji)
 $yearOptions = ['' => 'Wszystkie lata'];
-for ($year = 2025; $year >= 2015; $year--) {
-    $yearOptions[$year] = (string)$year;
+$years = [];
+foreach ($allShows as $show) {
+    $date = $show->getProductionDate();
+    if ($date) {
+        $year = substr($date, 0, 4);
+        if (ctype_digit($year)) {
+            $years[(int)$year] = (int)$year;
+        }
+    }
+}
+krsort($years);
+foreach ($years as $y) {
+    $yearOptions[$y] = (string) $y;
 }
 
+// Opcje ocen
 $ratingOptions = [
     '' => 'Wszystkie oceny',
     '4' => '4+ gwiazdek',
     '3' => '3+ gwiazdek',
     '2' => '2+ gwiazdek',
-    '1' => '1+ gwiazdek'
+    '1' => '1+ gwiazdek',
 ];
 
-$genreOptions = [
-    '' => 'Wszystkie gatunki',
-    '1' => 'Akcja',
-    '2' => 'Dramat',
-    '3' => 'Komedia',
-    '4' => 'Thriller',
-    '5' => 'Sci-Fi'
-];
+// Opcje gatunków z bazy kategorii
+$genreOptions = ['' => 'Wszystkie gatunki'];
+foreach ($categories as $category) {
+    $genreOptions[$category->getId()] = $category->getName();
+}
 
 return [
     'template' => 'search',
