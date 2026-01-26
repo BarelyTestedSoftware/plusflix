@@ -17,7 +17,12 @@
         <div class="header-container">
             <a href="/" class="logo">Plusflix</a>
 
-            <?php if (strpos($_SERVER['REQUEST_URI'], '/search') === false) component('search-bar'); ?>
+            <?php
+            $currentUri = filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL) ?? '';
+            if (strpos($currentUri, '/search') === false) {
+                component('search-bar');
+            }
+            ?>
         </div>
     </header>
 </nav>
