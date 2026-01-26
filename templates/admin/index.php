@@ -5,22 +5,30 @@
             <h1>Zarządzanie</h1>
         </div>
     </div>
-    <div class="admin-card-list">
-        <a href="/admin/show" class="admin-card-list__item">
-            <i class="fa-solid fa-film"></i>
-            <span>Filmy i seriale</span>
-        </a>
-        <a href="/admin/category" class="admin-card-list__item">
-            <i class="fa-solid fa-tags"></i>
-            <span>Kategorie</span>
-        </a>
-        <a href="/admin/person" class="admin-card-list__item">
-            <i class="fa-solid fa-users"></i>
-            <span>Osoby</span>
-        </a>
-        <a href="/admin/streaming" class="admin-card-list__item">
-            <i class="fa-solid fa-video"></i>
-            <span>Serwisy streamingowe</span>
-        </a>
+    <div class="admin-page-content">
+        <form method="GET" action="/admin" class="admin-form">
+            <?php
+            $options = [
+                'show' => 'Filmy i seriale',
+                'category' => 'Kategorie',
+                'person' => 'Osoby',
+                'streaming' => 'Serwisy streamingowe'
+            ];
+            $selectedValue = $_GET['table'] ?? null;
+
+            render_component('select', [
+                'name' => 'table',
+                'options' => $options,
+                'value' => $selectedValue
+            ]);
+            ?>
+            <button type="submit" class="button">Wybierz</button>
+        </form>
+
+        <?php if (isset($table_content)): ?>
+            <div class="admin-table-container">
+                <?php echo $table_content; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
