@@ -40,6 +40,10 @@ $logoAltValue = $streaming && $streaming->getLogoImage() ? $streaming->getLogoIm
                     'placeholder' => 'https://example.com/logo.png',
                     'value' => $logoSrcValue,
                 ]); ?>
+                <div class="image-preview" data-source-input="logo_src">
+                    <p class="image-preview__hint">Podgląd logo pojawi się po wpisaniu adresu URL.</p>
+                    <img class="image-preview__img" alt="Podgląd logo" loading="lazy">
+                </div>
             </div>
 
             <div class="form-group">
@@ -62,3 +66,53 @@ $logoAltValue = $streaming && $streaming->getLogoImage() ? $streaming->getLogoIm
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+	const previews = document.querySelectorAll('.image-preview');
+
+	const setupPreview = (preview) => {
+		const inputId = preview.dataset.sourceInput;
+		const input = document.getElementById(inputId);
+		const img = preview.querySelector('.image-preview__img');
+		const hint = preview.querySelector('.image-preview__hint');
+		if (!input || !img || !hint) return;
+
+		const defaultHint = hint.textContent;
+
+		const showHint = (text, isError = false) => {
+			hint.textContent = text;
+			hint.style.display = 'block';
+			hint.classList.toggle('image-preview__hint--error', Boolean(isError));
+			img.removeAttribute('src');
+			img.style.display = 'none';
+		};
+
+		const updatePreview = () => {
+			const url = input.value.trim();
+			if (!url) {
+				showHint(defaultHint);
+				return;
+			}
+
+			const testImage = new Image();
+			testImage.onload = () => {
+				img.src = url;
+				img.style.display = 'block';
+				hint.style.display = 'none';
+				hint.classList.remove('image-preview__hint--error');
+			};
+			testImage.onerror = () => {
+				showHint('Nie udało się wczytać obrazu. Sprawdź adres URL.', true);
+			};
+			testImage.src = url;
+		};
+
+		input.addEventListener('input', updatePreview);
+		input.addEventListener('change', updatePreview);
+		updatePreview();
+	};
+
+	previews.forEach(setupPreview);
+});
+</script>

@@ -1,0 +1,115 @@
+.admin-page-content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin: 0 auto;
+}
+
+.admin-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 2rem;
+    border-radius: var(--radius-m);
+    text-decoration: none;
+    color: var(--text-main);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    min-height: 160px;
+    text-align: center;
+    border: 1px solid var(--line-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.08;
+    transition: opacity 0.2s ease;
+}
+
+.admin-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-box:hover::before {
+    opacity: 0.15;
+}
+
+.admin-box i {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+
+.admin-box span {
+    font-size: 1rem;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+}
+
+.admin-box--purple {
+    background: var(--bg-surface);
+}
+
+.admin-box--purple::before {
+    background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+}
+
+.admin-box--purple i {
+    color: var(--primary);
+}
+
+.admin-box--blue {
+    background: var(--bg-surface);
+}
+
+.admin-box--blue::before {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, #06b6d4 100%);
+}
+
+.admin-box--blue i {
+    color: var(--accent-blue);
+}
+
+.admin-box--green {
+    background: var(--bg-surface);
+}
+
+.admin-box--green::before {
+    background: linear-gradient(135deg, var(--success) 0%, #10b981 100%);
+}
+
+.admin-box--green i {
+    color: var(--success);
+}
+
+.admin-box--orange {
+    background: var(--bg-surface);
+}
+
+.admin-box--orange::before {
+    background: linear-gradient(135deg, var(--danger) 0%, #f59e0b 100%);
+}
+
+.admin-box--orange i {
+    color: var(--danger);
+}
+
+@media (max-width: 768px) {
+    .admin-page-content {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .admin-box {
+        min-height: 140px;
+        padding: 2rem 1.5rem;
+    }
+}

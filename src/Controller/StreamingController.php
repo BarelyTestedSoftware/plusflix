@@ -29,14 +29,19 @@ class StreamingController
             throw new \InvalidArgumentException("Nazwa serwisu nie może być pusta.");
         }
 
-        if (isset($data['logo_image']['src']) && isset($data['logo_image']['alt'])) {
-            $media = Media::fromArray($data['logo_image']);
-            $media->save();
+        $streaming = new Streaming();
+        $streaming->setName($data['name']);
 
-            $data['logo_image'] = ['id' => $media->getId()];
+        // Obsługa logo
+        if (!empty($data['logo_image']['src'])) {
+            $logoMedia = new Media();
+            $logoMedia->setSrc($data['logo_image']['src']);
+            $logoMedia->setAlt($data['logo_image']['alt'] ?? $data['name'] . ' - Logo');
+            $logoMedia->save();
+            
+            $streaming->setLogoImage($logoMedia);
         }
 
-        $streaming = Streaming::fromArray($data);
         $streaming->save();
         $router->redirect('/admin/streaming');
 
@@ -58,7 +63,21 @@ class StreamingController
         if (!$streaming) {
             throw new NotFoundException("Streaming o ID $id nie istnieje");
         }
-        $streaming->fill($data);
+        
+        if (isset($data['name'])) {
+            $streaming->setName($data['name']);
+        }
+
+        // Obsługa logo
+        if (!empty($data['logo_image']['src'])) {
+            $logoMedia = new Media();
+            $logoMedia->setSrc($data['logo_image']['src']);
+            $logoMedia->setAlt($data['logo_image']['alt'] ?? $streaming->getName() . ' - Logo');
+            $logoMedia->save();
+            
+            $streaming->setLogoImage($logoMedia);
+        }
+
         $streaming->save();
         $router->redirect('/admin/streaming');
     }
