@@ -46,6 +46,11 @@ php -S localhost:3000 -t public
 ### 5. Otwórz aplikację
 Przejdź w przeglądarce na adres: [http://localhost:3000](http://localhost:3000)
 
+### 6. Uruchomienie migracji
+```bash
+php scripts/migrate.php
+```
+
 ---
 
 ## Struktura projektu

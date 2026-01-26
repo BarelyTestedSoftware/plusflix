@@ -21,11 +21,11 @@ $description = $highlightedShow->getDescription();
 <?php component('movie-background', ['backgroundImage' => $backgroundImage]); ?>
 
 <div class="hero-banner" id="hero-banner">
-    <div class="hero-poster">
-           <img src="<?= e($coverImage->src) ?>" 
-               alt="<?= e($coverImage->alt) ?>" 
-             class="hero-poster-image">
-    </div>
+        <div class="hero-poster">
+                     <img src="<?= e($coverImage?->getSrc()) ?>" 
+                             alt="<?= e($coverImage?->getAlt()) ?>" 
+                         class="hero-poster-image">
+        </div>
     
     <div class="hero-content">
 

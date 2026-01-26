@@ -8,7 +8,7 @@ class Person
 {
     private ?int $id = null;
     private ?string $name = null;
-    private ?int $type = null; // 0 for actor, 1 for director
+    private ?int $type = null; // 1 for actor, 2 for director
 
     public function getId(): ?int
     {

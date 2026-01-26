@@ -8,29 +8,16 @@ $name = $params['name'] ?? 'select';
 $options = $params['options'] ?? [];
 $placeholder = $params['placeholder'] ?? 'Wybierz...';
 $required = $params['required'] ?? false;
-$multiple = $params['multiple'] ?? false;
 $className = $params['class'] ?? '';
-$value = $params['value'] ?? ($multiple ? [] : '');
-
-// Normalizuj opcje do formatu [value => label]
-$normalizedOptions = [];
-foreach ($options as $key => $val) {
-    if (is_int($key)) {
-        $normalizedOptions[$val] = $val;
-    } else {
-        $normalizedOptions[$key] = $val;
-    }
-}
+$value = $params['value'] ?? '';
+$onchange = $params['onchange'] ?? '';
 ?>
-<div class="select-with-search select-no-search" data-component="select-no-search">
+<div class="select-with-search select-no-search" data-component="select-no-search" <?= $onchange ? 'data-onchange="' . e($onchange) . '"' : '' ?>>
     <div class="select-with-search__input" tabindex="0">
         <span class="select-with-search__selected">
             <?php
-            if ($multiple && is_array($value) && count($value)) {
-                $labels = array_map(fn($v) => $normalizedOptions[$v] ?? $v, $value);
-                echo implode(', ', array_map('e', $labels));
-            } elseif (!$multiple && $value && isset($normalizedOptions[$value])) {
-                echo e($normalizedOptions[$value]);
+            if ($value && isset($options[$value])) {
+                echo e($options[$value]);
             } else {
                 echo e($placeholder);
             }
@@ -39,13 +26,13 @@ foreach ($options as $key => $val) {
         <span class="select-with-search__arrow"><i class="fa-solid fa-chevron-down"></i></span>
     </div>
     <ul class="select-with-search__dropdown" hidden>
-        <?php foreach ($normalizedOptions as $optValue => $optLabel): ?>
+        <?php foreach ($options as $optValue => $optLabel): ?>
             <li class="select-with-search__option" data-value="<?= e($optValue) ?>">
                 <?= e($optLabel) ?>
             </li>
         <?php endforeach; ?>
     </ul>
-    <input type="hidden" name="<?= e($name) ?><?= $multiple ? '[]' : '' ?>" value="<?= $multiple ? '' : e($value) ?>">
+    <input <?= $required ? 'required' : '' ?> type="hidden" name="<?= e($name) ?>" value="<?= e($value) ?>">
 </div>
 <script>
 (function() {
@@ -88,6 +75,13 @@ foreach ($options as $key => $val) {
                 selectedSpan.textContent = option.textContent;
                 hiddenInput.value = value;
                 closeDropdown();
+                
+                // Wywołaj onchange jeśli zdefiniowany
+                const onchangeAttr = component.dataset.onchange;
+                if (onchangeAttr) {
+                    const func = new Function('return ' + onchangeAttr);
+                    func.call(hiddenInput);
+                }
             });
         });
     });

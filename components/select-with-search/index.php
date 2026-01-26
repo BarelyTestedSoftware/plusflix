@@ -8,31 +8,50 @@ $options = $params['options'] ?? [];
 $placeholder = $params['placeholder'] ?? 'Wybierz lub wyszukaj...';
 $allowCustom = $params['allowCustom'] ?? true;
 $required = $params['required'] ?? false;
+$multiple = $params['multiple'] ?? true;
+$selected = $params['selected'] ?? [];  // Lista ID do pre-zaznaczenia (lub pojedyncza wartość dla single)
 
-// Normalizuj opcje do formatu [value => label]
-$normalizedOptions = [];
-foreach ($options as $key => $val) {
-    if (is_int($key)) {
-        $normalizedOptions[$val] = $val;
-    } else {
-        $normalizedOptions[$key] = $val;
+// Konwertuj selected na array jeśli to string (dla multi-select)
+if ($multiple && !is_array($selected)) {
+    $selected = [$selected];
+}
+// Wyodrębnij pre-zaznaczone wartości i usuń je z dostępnych opcji (tylko dla multi-select)
+$selectedOptions = [];
+$selectedValue = '';
+$selectedLabel = '';
+
+if ($multiple) {
+    if (!is_array($selected)) {
+        $selected = [$selected];
+    }
+    foreach ($selected as $selectedId) {
+        if (isset($options[$selectedId])) {
+            $selectedOptions[$selectedId] = $options[$selectedId];
+            unset($options[$selectedId]);
+        }
+    }
+} else {
+    // Single-select mode
+    if (!empty($selected)) {
+        $selectedValue = is_array($selected) ? reset($selected) : $selected;
+        $selectedLabel = $options[$selectedValue] ?? $selectedValue;
     }
 }
 ?>
 
-<div class="select-with-search" data-component="select-with-search" data-multiselect="true">
+<div class="select-with-search" data-component="select-with-search" data-multiselect="<?= $multiple ? 'true' : 'false' ?>" data-name="<?= e($name) ?>">
     <input 
         type="text" 
         id="<?= e($name) ?>"
-        name="<?= e($name) ?>"
         placeholder="<?= e($placeholder) ?>"
         class="select-with-search__input"
         autocomplete="off"
         <?= $required ? 'required' : '' ?>
         data-allow-custom="<?= $allowCustom ? 'true' : 'false' ?>"
+        value="<?= !$multiple ? e($selectedLabel) : '' ?>"
     >
     <ul class="select-with-search__dropdown" hidden>
-        <?php foreach ($normalizedOptions as $optValue => $optLabel): ?>
+        <?php foreach ($options as $optValue => $optLabel): ?>
             <li 
                 class="select-with-search__option" 
                 data-value="<?= e($optValue) ?>"
@@ -40,8 +59,35 @@ foreach ($options as $key => $val) {
                 <?= e($optLabel) ?>
             </li>
         <?php endforeach; ?>
+        <?php if ($multiple): ?>
+            <?php foreach ($selectedOptions as $optValue => $optLabel): ?>
+                <li 
+                    class="select-with-search__option" 
+                    data-value="<?= e($optValue) ?>" 
+                    hidden
+                >
+                    <?= e($optLabel) ?>
+                </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </ul>
-    <div class="select-with-search__pills"></div>
+    <?php if ($multiple): ?>
+        <div class="select-with-search__pills">
+            <?php foreach ($selectedOptions as $id => $label): ?>
+                <span class="select-with-search__pill">
+                    <?= e($label) ?>
+                    <button class="select-with-search__remove" type="button" data-value="<?= e($id) ?>">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </span>
+            <?php endforeach; ?>
+        </div>
+        <?php foreach ($selectedOptions as $id => $label): ?>
+            <input type="hidden" name="<?= e(str_replace('[]', '', $name)) ?>[]" value="<?= e($id) ?>">
+        <?php endforeach; ?>
+    <?php else: ?>
+        <input type="hidden" name="<?= e($name) ?>" value="<?= e($selectedValue) ?>">
+    <?php endif; ?>
 </div>
 
 <script>
@@ -55,9 +101,16 @@ foreach ($options as $key => $val) {
         const pillsContainer = component.querySelector('.select-with-search__pills');
         const allowCustom = input.dataset.allowCustom === 'true';
         const isMulti = component.dataset.multiselect === 'true';
-        const name = '<?= e($name) ?>';
+        const hiddenInput = component.querySelector('input[type="hidden"]');
+        const fieldName = component.dataset.name;
+
+        if (hiddenInput && fieldName) {
+            hiddenInput.name = fieldName;
+        }
+        
         let activeIndex = -1;
-        let selected = [];
+        // Pobierz już zaznaczone wartości z hidden inputów
+        let selected = Array.from(component.querySelectorAll('input[type="hidden"]')).map(inp => inp.value);
 
         // Pokaż dropdown przy focusie
         input.addEventListener('focus', function() {
@@ -70,6 +123,15 @@ foreach ($options as $key => $val) {
             if (!component.contains(e.target)) {
                 dropdown.hidden = true;
                 activeIndex = -1;
+                
+                if (allowCustom && input.value.trim()) {
+                    if (!isMulti) {
+                        hiddenInput.value = input.value.trim();
+                    } else {
+                        addPill(input.value.trim(), input.value.trim());
+                        input.value = '';
+                    }
+                }
             }
         });
 
@@ -77,6 +139,20 @@ foreach ($options as $key => $val) {
         input.addEventListener('input', function() {
             dropdown.hidden = false;
             filterOptions();
+            
+            // Dla single-select z allowCustom, zapisz wartość na żywo
+            if (!isMulti && allowCustom && input.value.trim()) {
+                hiddenInput.value = input.value.trim();
+            } else if (!isMulti && allowCustom && !input.value.trim()) {
+                hiddenInput.value = '';
+            }
+        });
+
+        input.addEventListener('blur', function() {
+            if (allowCustom && isMulti && input.value.trim()) {
+                addPill(input.value.trim(), input.value.trim());
+                input.value = '';
+            }
         });
 
         // Nawigacja klawiaturą
@@ -94,10 +170,20 @@ foreach ($options as $key => $val) {
                 e.preventDefault();
                 if (activeIndex >= 0 && visibleOptions[activeIndex]) {
                     selectOption(visibleOptions[activeIndex]);
+                    if (!isMulti) {
+                        dropdown.hidden = true;
+                    }
                 } else if (allowCustom && input.value.trim()) {
-                    addPill(input.value.trim(), input.value.trim());
+                    if (isMulti) {
+                        addPill(input.value.trim(), input.value.trim());
+                        input.value = '';
+                    } else {
+                        // Single-select custom value
+                        hiddenInput.value = input.value.trim();
+                    }
+                    dropdown.hidden = true;
                 }
-                dropdown.hidden = true;
+                activeIndex = -1;
             } else if (e.key === 'Escape') {
                 dropdown.hidden = true;
                 activeIndex = -1;
@@ -111,6 +197,18 @@ foreach ($options as $key => $val) {
                 dropdown.hidden = true;
             });
         });
+
+        // Kliknięcie na przycisk usuwania pillu (tylko dla multi-select)
+        if (isMulti && pillsContainer) {
+            pillsContainer.addEventListener('click', function(e) {
+                if (e.target.closest('.select-with-search__remove')) {
+                    e.preventDefault();
+                    const btn = e.target.closest('.select-with-search__remove');
+                    const value = btn.dataset.value;
+                    removePill(value);
+                }
+            });
+        }
 
         function filterOptions() {
             const search = input.value.toLowerCase();
@@ -134,11 +232,13 @@ foreach ($options as $key => $val) {
         function selectOption(option) {
             if (isMulti) {
                 if (!selected.includes(option.dataset.value)) {
-                    addPill(option.dataset.value, option.textContent);
+                    addPill(option.dataset.value, option.textContent.trim());
                 }
                 input.value = '';
             } else {
-                input.value = option.textContent;
+                // Single-select mode
+                input.value = option.textContent.trim();
+                hiddenInput.value = option.dataset.value;
             }
             activeIndex = -1;
             filterOptions();
@@ -165,118 +265,25 @@ foreach ($options as $key => $val) {
                 const removeBtn = document.createElement('button');
                 removeBtn.className = 'select-with-search__remove';
                 removeBtn.type = 'button';
+                removeBtn.setAttribute('data-value', value);
                 removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-                removeBtn.onclick = function() { removePill(value); };
                 pill.appendChild(removeBtn);
                 pillsContainer.appendChild(pill);
             });
             // Hidden inputs for form submit
-            pillsContainer.querySelectorAll('input').forEach(i => i.remove());
+            component.querySelectorAll('input[type="hidden"]').forEach(i => i.remove());
             selected.forEach(function(value) {
                 const hidden = document.createElement('input');
                 hidden.type = 'hidden';
-                hidden.name = name;
+                hidden.name = fieldName;
                 hidden.value = value;
-                pillsContainer.appendChild(hidden);
+                component.appendChild(hidden);
             });
         }
 
         function getLabel(value) {
             const opt = Array.from(options).find(o => o.dataset.value == value);
-            return opt ? opt.textContent : value;
-        }
-    });
-})();
-</script>
-
-<script>
-(function() {
-    document.querySelectorAll('[data-component="select-with-search"]').forEach(function(component) {
-        if (component.dataset.initialized) return;
-        component.dataset.initialized = 'true';
-        
-        const input = component.querySelector('.select-with-search__input');
-        const dropdown = component.querySelector('.select-with-search__dropdown');
-        const options = component.querySelectorAll('.select-with-search__option');
-        const allowCustom = input.dataset.allowCustom === 'true';
-        
-        let activeIndex = -1;
-        
-        // Pokaż dropdown przy focusie
-        input.addEventListener('focus', function() {
-            dropdown.hidden = false;
-            filterOptions();
-        });
-        
-        // Ukryj dropdown przy kliknięciu poza
-        document.addEventListener('click', function(e) {
-            if (!component.contains(e.target)) {
-                dropdown.hidden = true;
-                activeIndex = -1;
-            }
-        });
-        
-        // Filtruj opcje przy wpisywaniu
-        input.addEventListener('input', function() {
-            dropdown.hidden = false;
-            filterOptions();
-        });
-        
-        // Nawigacja klawiaturą
-        input.addEventListener('keydown', function(e) {
-            const visibleOptions = Array.from(options).filter(opt => !opt.hidden);
-            
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                activeIndex = Math.min(activeIndex + 1, visibleOptions.length - 1);
-                updateActive(visibleOptions);
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                activeIndex = Math.max(activeIndex - 1, 0);
-                updateActive(visibleOptions);
-            } else if (e.key === 'Enter') {
-                e.preventDefault();
-                if (activeIndex >= 0 && visibleOptions[activeIndex]) {
-                    selectOption(visibleOptions[activeIndex]);
-                }
-                dropdown.hidden = true;
-            } else if (e.key === 'Escape') {
-                dropdown.hidden = true;
-                activeIndex = -1;
-            }
-        });
-        
-        // Kliknięcie w opcję
-        options.forEach(function(option) {
-            option.addEventListener('click', function() {
-                selectOption(option);
-                dropdown.hidden = true;
-            });
-        });
-        
-        function filterOptions() {
-            const search = input.value.toLowerCase();
-            activeIndex = -1;
-            
-            options.forEach(function(option) {
-                const text = option.textContent.toLowerCase();
-                const matches = text.includes(search);
-                option.hidden = !matches;
-                option.classList.remove('select-with-search__option--active');
-            });
-        }
-        
-        function updateActive(visibleOptions) {
-            options.forEach(opt => opt.classList.remove('select-with-search__option--active'));
-            if (activeIndex >= 0 && visibleOptions[activeIndex]) {
-                visibleOptions[activeIndex].classList.add('select-with-search__option--active');
-                visibleOptions[activeIndex].scrollIntoView({ block: 'nearest' });
-            }
-        }
-        
-        function selectOption(option) {
-            input.value = option.dataset.value;
-            activeIndex = -1;
+            return opt ? opt.textContent.trim() : value;
         }
     });
 })();

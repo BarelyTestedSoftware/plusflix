@@ -150,7 +150,7 @@ class Streaming
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'logo_image' => $this->logoImage->toArray(),
+            'logo_image' => $this->logoImage ? $this->logoImage->toArray() : null,
         ];
     }
 }
