@@ -1,0 +1,141 @@
+/* Select component - styl jak select-with-search, bez inputa i dropdowna JS */
+.select-no-search {
+    position: relative;
+    width: 100%;
+}
+
+.select-no-search select.select-with-search__input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-main);
+    background-color: var(--background-color-light);
+    border: 1px solid var(--line-color);
+    border-radius: 4px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-sizing: border-box;
+    font-family: var(--font-main);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%236c5dd3" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.2em;
+}
+
+.select-no-search select.select-with-search__input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 93, 211, 0.25);
+}
+
+/* Dropdown look for <option> */
+.select-no-search select.select-with-search__input option {
+    background: var(--bg-surface);
+    color: var(--text-main);
+    border-radius: 0;
+    padding: 8px 12px;
+    display: block;
+}
+.select-no-search select.select-with-search__input option:checked,
+.select-no-search select.select-with-search__input option:focus,
+.select-no-search select.select-with-search__input option:hover {
+    background: var(--accent-color-1);
+    color: var(--background-color);
+}
+
+/* Pills for multi-select */
+.select-with-search__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 8px;
+}
+
+.select-with-search__pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    background: linear-gradient(135deg, var(--primary), var(--accent-blue));
+    color: var(--text-main);
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-right: 4px;
+}
+
+.select-with-search__pill .select-with-search__remove {
+    margin-left: 8px;
+    cursor: pointer;
+    color: var(--text-main);
+    font-size: 1rem;
+    background: none;
+    border: none;
+    padding: 0;
+    line-height: 1;
+}
+/* SelectWithSearch Component */
+.select-with-search {
+    position: relative;
+    width: 100%;
+}
+
+
+.select-with-search__input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-main);
+    background-color: var(--background-color-light);
+    border: 1px solid var(--line-color);
+    border-radius: var(--radius-s);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-sizing: border-box;
+    font-family: var(--font-main);
+}
+
+.select-with-search__input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 93, 211, 0.25);
+}
+
+.select-with-search__dropdown {
+    position: absolute;
+    top: 49px;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    background: var(--bg-surface);
+    border: 1px solid var(--line-color);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+}
+
+.select-with-search__dropdown[hidden] {
+    display: none;
+}
+
+.select-with-search__option {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+.select-with-search__option:hover,
+.select-with-search__option--active {
+    background: var(--accent-color-1);
+    color: var(--background-color);
+}
+
+.select-with-search__option[hidden] {
+    display: none;
+}

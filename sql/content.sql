@@ -21,8 +21,8 @@ INSERT INTO media (id, src, alt) VALUES
 INSERT INTO category (id, name) VALUES
     (1, 'Sci-Fi'), (2, 'Komedie'), (3, 'Dramaty'), (4, 'Horrory'), (5, 'Animacje');
 
-INSERT INTO streaming (id, name, logoImageId) VALUES
-    (1, 'Netflix', NULL), (2, 'HBO Max', NULL), (3, 'Disney+', NULL);
+INSERT INTO streaming (id, name, logo_image_id) VALUES
+    (1, 'Netflix', 3), (2, 'HBO', 4), (3, 'Apple TV', NULL), (4, 'Prime Video', NULL), (5, 'Disney+', NULL);
 
 INSERT INTO person (id, name, type) VALUES
 (1, 'Christopher Nolan', 2),
@@ -31,37 +31,17 @@ INSERT INTO person (id, name, type) VALUES
 (4, 'Greta Gerwig', 2),
 (5, 'Steve Carell', 1);
 
-INSERT INTO show (id, title, description, type, productionDate, numberOfEpisodes, coverImageId, backgroundImageId, directorId) VALUES
+INSERT INTO show (id, title, description, type, production_date, number_of_episodes, cover_image_id, background_image_id, director_id) VALUES
+    (1, 'Interstellar', 'Gdy zasoby Ziemi wyczerpują się, grupa badaczy wyrusza w najważniejszą misję w dziejach ludzkości: podróż poza naszą galaktykę, by sprawdzić, czy człowiek ma szansę przetrwać wśród gwiazd.', 1, '2014-11-07', 1, 1, 1, 1),
+    (2, 'The Office', 'Satyryczne spojrzenie na codzienne życie pracowników biurowych w firmie papierniczej Dunder Mifflin, gdzie absurdalne sytuacje i specyficzny humor szefa, Michaela Scotta, są na porządku dziennym.', 2, '2005-03-24', 201, 2, 2, NULL),
+    (3, 'Inception', 'Dom Cobb jest mistrzem ekstrakcji – kradnie cenne sekrety z głębi podświadomości podczas snu. Teraz otrzymuje szansę na odkupienie, jeśli uda mu się dokonać niemożliwego: incepcji, czyli zaszczepienia myśli w ludzkim umyśle.', 1, '2010-07-16', 1, NULL, NULL, 1),
+    (4, 'Lady Bird', 'Buntownicza nastolatka o artystycznej duszy próbuje odnaleźć swoją drogę w konserwatywnym liceum w Sacramento, mierząc się z trudnymi relacjami z matką i marzeniami o wyjeździe na studia do Nowego Jorku.', 1, '2017-11-03', 1, NULL, NULL, 5),
+    (5, 'Stranger Things', 'W spokojnym miasteczku Hawkins znika chłopiec. Poszukiwania prowadzą jego przyjaciół na trop mrocznej tajemnicy rządu, nadprzyrodzonych sił i spotkania z niezwykłą dziewczynką.', 2, '2016-07-15', 34, NULL, NULL, NULL);
 
-(1, 'Interstellar', 'Gdy zasoby Ziemi wyczerpują się, grupa badaczy wyrusza w podróż poza naszą galaktykę.', 1, '2014-11-07', 1, 1, 101, 1),
-(2, 'Inception', 'Złodziej kradnie sekrety z podświadomości podczas snu.', 1, '2010-07-16', 1, 3, 103, 1),
-(3, 'Matrix', 'Haker odkrywa, że rzeczywistość jest symulacją stworzoną przez maszyny.', 1, '1999-03-31', 1, 6, NULL, NULL),
+INSERT INTO show_streaming (show_id, streaming_id, link_to_show) VALUES (1, 1, '/watch/interstellar'), (2, 1, '/watch/the-office'), (5, 1, '/watch/stranger-things');
+INSERT INTO show_category (show_id, category_id) VALUES (1, 1), (2, 2), (3, 1), (4, 3), (5, 4);
+INSERT INTO show_actor (show_id, person_id) VALUES (1, 3), (1, 4), (2, 2);
 
-
-(4, 'The Office', 'Codzienne życie pracowników biura w Scranton.', 2, '2005-03-24', 201, 2, 102, NULL),
-(5, 'Friends', 'Przygody grupy przyjaciół mieszkających na Manhattanie.', 2, '1994-09-22', 236, 8, NULL, NULL),
-(6, 'Lady Bird', 'Buntownicza nastolatka próbuje odnaleźć swoją drogę.', 1, '2017-11-03', 1, 4, NULL, 4),
-
-
-(7, 'Joker', 'Komik Arthur Fleck popada w obłęd i staje się przestępcą.', 1, '2019-10-04', 1, 7, 105, 2),
-
-
-(8, 'Stranger Things', 'W małym miasteczku znika chłopiec, co odsłania mroczne tajemnice.', 2, '2016-07-15', 34, 5, 104, 3),
-(9, 'It (To)', 'Grupa dzieci musi zmierzyć się ze swoimi lękami i klownem Pennywise.', 1, '2017-09-08', 1, 9, NULL, NULL),
-
-
-(10, 'Król Lew', 'Młody lew Simba musi odzyskać królestwo po śmierci ojca.', 1, '1994-06-15', 1, 10, NULL, NULL);
-
-
-INSERT INTO showCategory (showId, categoryId) VALUES
-                                                  (1, 1), (2, 1), (3, 1), -- Sci-Fi
-                                                  (4, 2), (5, 2), (6, 2), -- Komedie
-                                                  (6, 3), (7, 3), (1, 3), -- Dramaty (Lady Bird, Joker, Interstellar)
-                                                  (8, 4), (9, 4),         -- Horrory (Stranger Things, It)
-                                                  (10, 5);                -- Animacje
-
-
-INSERT INTO rating (value, showId) VALUES
-                                       (5, 1), (4, 1), (5, 4), (5, 8), (4, 7), (3, 6);
+INSERT INTO rating (value, show_id) VALUES (4, 1), (4, 2), (4, 3), (3, 4), (4, 5);
 
 PRAGMA foreign_keys = ON;

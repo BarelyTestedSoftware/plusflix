@@ -21,7 +21,7 @@ $nameValue = $category ? $category->getName() : '';
 		<form method="POST" class="admin-form">
 			<div class="form-group">
 				<label for="name" class="form-label">Nazwa kategorii</label>
-				<?php component('input-text', [
+				<?php component('input-field', [
 					'name' => 'name',
 					'id' => 'name',
 					'placeholder' => 'Wpisz nazwę kategorii',

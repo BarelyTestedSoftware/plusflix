@@ -105,11 +105,7 @@ if ($highlightedShow) {
             ?>
 
             <div class="movie-list-section">
-                <div class="category-title">
-                    <?= htmlspecialchars($catName) ?>
-                </div>
-
-                <?php component('movie-list', ['shows' => $categoryShows]) ?>
+                <?php component('movie-list', ['shows' => $categoryShows, "sectionTitle" => $catName]) ?>
             </div>
 
         <?php endforeach; ?>

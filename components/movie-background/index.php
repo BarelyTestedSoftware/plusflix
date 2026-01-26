@@ -13,8 +13,8 @@ if (!$backgroundImage) {
 ?>
 
 <div class="movie-background">
-    <img src="<?= e($backgroundImage->src) ?>" 
-         alt="<?= e($backgroundImage->alt) ?>" 
+    <img src="<?= e($backgroundImage->getSrc()) ?>" 
+         alt="<?= e($backgroundImage->getAlt()) ?>" 
          class="movie-background-image">
     <div class="movie-background-gradient"></div>
 </div>

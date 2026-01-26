@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS category (
 CREATE TABLE IF NOT EXISTS streaming (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(255) NOT NULL,
-    logoImageId INTEGER,
-    FOREIGN KEY (logoImageId) REFERENCES media(id)
+    logo_image_id INTEGER,
+    FOREIGN KEY (logo_image_id) REFERENCES media(id)
 );
 
 CREATE TABLE IF NOT EXISTS person (
@@ -30,44 +30,44 @@ CREATE TABLE IF NOT EXISTS show (
     title VARCHAR(255) NOT NULL,
     description TEXT,
     type INTEGER,
-    productionDate DATE,
-    numberOfEpisodes INTEGER,
-    coverImageId INTEGER,
-    backgroundImageId INTEGER,
-    directorId INTEGER,
-    FOREIGN KEY (coverImageId) REFERENCES media(id),
-    FOREIGN KEY (backgroundImageId) REFERENCES media(id),
-    FOREIGN KEY (directorId) REFERENCES person(id)
+    production_date DATE,
+    number_of_episodes INTEGER,
+    cover_image_id INTEGER,
+    background_image_id INTEGER,
+    director_id INTEGER,
+    FOREIGN KEY (cover_image_id) REFERENCES media(id),
+    FOREIGN KEY (background_image_id) REFERENCES media(id),
+    FOREIGN KEY (director_id) REFERENCES person(id)
 );
 
-CREATE TABLE IF NOT EXISTS showStreaming (
+CREATE TABLE IF NOT EXISTS show_streaming (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    showId INTEGER,
-    streamingId INTEGER,
-    linkToShow VARCHAR(255),
-    FOREIGN KEY (showId) REFERENCES show(id) ON DELETE CASCADE,
-    FOREIGN KEY (streamingId) REFERENCES streaming(id) ON DELETE CASCADE
+    show_id INTEGER,
+    streaming_id INTEGER,
+    link_to_show VARCHAR(255),
+    FOREIGN KEY (show_id) REFERENCES show(id) ON DELETE CASCADE,
+    FOREIGN KEY (streaming_id) REFERENCES streaming(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS showCategory (
+CREATE TABLE IF NOT EXISTS show_category (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    showId INTEGER,
-    categoryId INTEGER,
-    FOREIGN KEY (showId) REFERENCES show(id) ON DELETE CASCADE,
-    FOREIGN KEY (categoryId) REFERENCES category(id) ON DELETE CASCADE
+    show_id INTEGER,
+    category_id INTEGER,
+    FOREIGN KEY (show_id) REFERENCES show(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS showActor (
+CREATE TABLE IF NOT EXISTS show_actor (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    showId INTEGER,
-    personId INTEGER,
-    FOREIGN KEY (showId) REFERENCES show(id) ON DELETE CASCADE,
-    FOREIGN KEY (personId) REFERENCES person(id) ON DELETE CASCADE
+    show_id INTEGER,
+    person_id INTEGER,
+    FOREIGN KEY (show_id) REFERENCES show(id) ON DELETE CASCADE,
+    FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS rating (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     value INTEGER,
-    showId INTEGER,
-    FOREIGN KEY (showId) REFERENCES show(id) ON DELETE CASCADE
+    show_id INTEGER,
+    FOREIGN KEY (show_id) REFERENCES show(id) ON DELETE CASCADE
 );

@@ -5,6 +5,12 @@
     overflow: auto;
 }
 
+.movies-grid--multiline {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    overflow: visible;
+}
+
 .category-title {
     font-size: 13px;
     color: #ccc;

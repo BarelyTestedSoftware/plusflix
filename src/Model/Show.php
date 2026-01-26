@@ -187,12 +187,19 @@ class Show
         $this->setDescription($array['description'] ?? $this->getDescription());
         $this->setType(isset($array['type']) ? (int) $array['type'] : $this->getType());
 
-        // Kolumny w bazie są w camelCase, dopuszczamy także aliasy snake_case z zapytań
-        $productionDate = $array['productionDate'] ?? $array['production_date'] ?? null;
+        $productionDate = $array['production_date'] ?? null;
         $this->setProductionDate($productionDate ?? $this->getProductionDate());
 
-        $numberOfEpisodes = $array['numberOfEpisodes'] ?? $array['number_of_episodes'] ?? null;
+        $numberOfEpisodes = $array['number_of_episodes'] ?? null;
         $this->setNumberOfEpisodes($numberOfEpisodes !== null ? (int) $numberOfEpisodes : $this->getNumberOfEpisodes());
+
+        $directorId = $array['director'] ?? null;
+        if ($directorId !== null) {
+            // TODO: Załaduj pełny obiekt Person
+            $director = new Person();
+            $director->setId((int) $directorId);
+            $this->setDirector($director);
+        }
 
         return $this;
     }
@@ -205,10 +212,10 @@ class Show
                 d.id AS director_id, d.name AS director_name, d.type AS director_type,
                 AVG(r.value) AS avg_rating, COUNT(r.id) AS rating_count
             FROM show s
-            LEFT JOIN media cover ON cover.id = s.coverImageId
-            LEFT JOIN media bg ON bg.id = s.backgroundImageId
-            LEFT JOIN person d ON d.id = s.directorId
-            LEFT JOIN rating r ON r.showId = s.id
+            LEFT JOIN media cover ON cover.id = s.cover_image_id
+            LEFT JOIN media bg ON bg.id = s.background_image_id
+            LEFT JOIN person d ON d.id = s.director_id
+            LEFT JOIN rating r ON r.show_id = s.id
             GROUP BY s.id';
         $statement = $pdo->prepare($sql);
         $statement->execute();
@@ -235,62 +242,94 @@ class Show
         return $shows;
     }
 
-    public static function find(int $id): ?self
-    {
-        $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-
-
-        $stmt = $pdo->prepare('SELECT * FROM show WHERE id = :id');
-        $stmt->execute(['id' => $id]);
-        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+    public static function find(int $id): ?Show {
+        $pdo = new PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+        $sql = 'SELECT s.*, 
+                cover.id AS cover_id, cover.src AS cover_src, cover.alt AS cover_alt,
+                bg.id AS bg_id, bg.src AS bg_src, bg.alt AS bg_alt,
+                d.id AS director_id, d.name AS director_name, d.type AS director_type,
+                AVG(r.value) AS avg_rating, COUNT(r.id) AS rating_count
+            FROM show s
+            LEFT JOIN media cover ON cover.id = s.cover_image_id
+            LEFT JOIN media bg ON bg.id = s.background_image_id
+            LEFT JOIN person d ON d.id = s.director_id
+            LEFT JOIN rating r ON r.show_id = s.id
+            WHERE s.id = :id
+            GROUP BY s.id';
+        $statement = $pdo->prepare($sql);
+        $statement->execute(['id' => $id]);
+        
+        $data = $statement->fetch(\PDO::FETCH_ASSOC);
 
         if (!$data) {
             return null;
         }
 
-        $show = self::fromArray($data);
+        $show = self::hydrateBaseWithJoins($data);
 
-
-        $showsCollection = [$show->getId() => $show];
-        $ids = [$show->getId()];
-
-        self::populateCategories($pdo, $showsCollection, $ids);
-        self::populateActors($pdo, $showsCollection, $ids);
-
-        if (method_exists(self::class, 'populateStreamings')) {
-            self::populateStreamings($pdo, $showsCollection, $ids);
-        } else {
-            self::populateStreaming($pdo, $showsCollection, $ids);
-        }
+        // Use a referenced map so populate* can mutate the show instance
+        $showMap = [$id => $show];
+        self::populateCategories($pdo, $showMap, [$id]);
+        self::populateActors($pdo, $showMap, [$id]);
+        self::populateStreamings($pdo, $showMap, [$id]);
 
         return $show;
     }
 
     public function save(): void {
         $pdo = new PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+        //echo "\nhej\n";
+        //var_dump($this->toArray());
+        
+        // TODO: Obsługa nowych zdjęć - gdy będzie MediaController, zmień na rzeczywiste tworzenie Media
+        // TODO: Jeśli cover lub background image zostały zmienione, stwórz nowy rekord w media
+        $coverImageId = $this->getCoverImage()?->getId();
+        $backgroundImageId = $this->getBackgroundImage()?->getId();
+        $directorId = $this->getDirector()?->getId();
+        
         if (! $this->getId()) {
-            $sql = "INSERT INTO show (title, description, type, production_date, number_of_episodes)
-            VALUES (:title, :description, :type, :production_date, :number_of_episodes)";
+            $sql = "INSERT INTO show (title, description, type, production_date, number_of_episodes, cover_image_id, background_image_id, director_id)
+            VALUES (:title, :description, :type, :production_date, :number_of_episodes, :cover_image_id, :background_image_id, :director_id)";
             $statement = $pdo->prepare($sql);
             $statement->execute([
                 ':title' => $this->getTitle(),
                 ':description' => $this->getDescription(),
                 ':type' => $this->getType(),
                 ':production_date' => $this->getProductionDate(),
-                ':number_of_episodes' => $this->getNumberOfEpisodes(),
+                ':number_of_episodes' => (int)$this->getNumberOfEpisodes(),
+                ':cover_image_id' => $coverImageId,
+                ':background_image_id' => $backgroundImageId,
+                ':director_id' => (int)$directorId,
             ]);
 
             $this->setId($pdo->lastInsertId());
         } else {
+                    //echo "\nhej\n";
+                    var_dump([
+                ':title' => $this->getTitle(),
+                ':description' => $this->getDescription(),
+                ':type' => intval($this->getType()),
+                ':production_date' => $this->getProductionDate(),
+                ':number_of_episodes' => intval($this->getNumberOfEpisodes()),
+                ':cover_image_id' => $coverImageId,
+                ':background_image_id' => $backgroundImageId,
+                ':director_id' => intval($directorId),
+                ':id' => $this->getId(),
+            ]);
             $sql = "UPDATE show SET title = :title, description = :description, type = :type,
-                production_date = :production_date, number_of_episodes = :number_of_episodes WHERE id = :id";
+                production_date = :production_date, number_of_episodes = :number_of_episodes,
+                cover_image_id = :cover_image_id, background_image_id = :background_image_id,
+                director_id = :director_id WHERE id = :id";
             $statement = $pdo->prepare($sql);
             $statement->execute([
                 ':title' => $this->getTitle(),
                 ':description' => $this->getDescription(),
                 ':type' => $this->getType(),
                 ':production_date' => $this->getProductionDate(),
-                ':number_of_episodes' => $this->getNumberOfEpisodes(),
+                ':number_of_episodes' => (int)$this->getNumberOfEpisodes(),
+                ':cover_image_id' => $coverImageId,
+                ':background_image_id' => $backgroundImageId,
+                ':director_id' => (int)$directorId,
                 ':id' => $this->getId(),
             ]);
         }
@@ -308,25 +347,25 @@ class Show
 
         if (! empty($row['cover_id'])) {
             $media = new Media();
-            $media->id = (int) $row['cover_id'];
-            $media->src = $row['cover_src'] ?? '';
-            $media->alt = $row['cover_alt'] ?? '';
+            $media->setId((int) $row['cover_id']);
+            $media->setSrc($row['cover_src'] ?? '');
+            $media->setAlt($row['cover_alt'] ?? '');
             $show->setCoverImage($media);
         }
 
         if (! empty($row['bg_id'])) {
             $media = new Media();
-            $media->id = (int) $row['bg_id'];
-            $media->src = $row['bg_src'] ?? '';
-            $media->alt = $row['bg_alt'] ?? '';
+            $media->setId((int) $row['bg_id']);
+            $media->setSrc($row['bg_src'] ?? '');
+            $media->setAlt($row['bg_alt'] ?? '');
             $show->setBackgroundImage($media);
         }
 
         if (! empty($row['director_id'])) {
             $director = new Person();
-            $director->id = (int) $row['director_id'];
-            $director->name = $row['director_name'] ?? '';
-            $director->type = isset($row['director_type']) ? (int) $row['director_type'] : 1;
+            $director->setId((int) $row['director_id']);
+            $director->setName($row['director_name'] ?? '');
+            $director->setType(isset($row['director_type']) ? (int) $row['director_type'] : 1);
             $show->setDirector($director);
         }
 
@@ -350,16 +389,16 @@ class Show
         }
 
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $sql = "SELECT sc.showId, c.id, c.name
-            FROM showCategory sc
-            INNER JOIN category c ON c.id = sc.categoryId
-            WHERE sc.showId IN ($placeholders)
+        $sql = "SELECT sc.show_id, c.id, c.name
+            FROM show_category sc
+            INNER JOIN category c ON c.id = sc.category_id
+            WHERE sc.show_id IN ($placeholders)
             ORDER BY c.name";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($ids);
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $showId = (int) $row['showId'];
+            $showId = (int) $row['show_id'];
             if (! isset($showsById[$showId])) {
                 continue;
             }
@@ -383,23 +422,23 @@ class Show
         }
 
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $sql = "SELECT sa.showId, p.id, p.name, p.type
-            FROM showActor sa
-            INNER JOIN person p ON p.id = sa.personId
-            WHERE sa.showId IN ($placeholders)
+        $sql = "SELECT sa.show_id, p.id, p.name, p.type
+            FROM show_actor sa
+            INNER JOIN person p ON p.id = sa.person_id
+            WHERE sa.show_id IN ($placeholders)
             ORDER BY p.name";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($ids);
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $showId = (int) $row['showId'];
+            $showId = (int) $row['show_id'];
             if (! isset($showsById[$showId])) {
                 continue;
             }
             $actor = new Person();
-            $actor->id = (int) $row['id'];
-            $actor->name = $row['name'] ?? '';
-            $actor->type = isset($row['type']) ? (int) $row['type'] : 0;
+            $actor->setId((int) $row['id']);
+            $actor->setName($row['name'] ?? '');
+            $actor->setType(isset($row['type']) ? (int) $row['type'] : 0);
 
             $current = $showsById[$showId]->getActors();
             $current[] = $actor;
@@ -417,32 +456,32 @@ class Show
         }
 
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $sql = "SELECT ss.showId, st.id, st.name,
+        $sql = "SELECT ss.show_id, st.id, st.name,
                     m.id AS logo_id, m.src AS logo_src, m.alt AS logo_alt
-            FROM showStreaming ss
-            INNER JOIN streaming st ON st.id = ss.streamingId
-            LEFT JOIN media m ON m.id = st.logoImageId
-            WHERE ss.showId IN ($placeholders)
+            FROM show_streaming ss
+            INNER JOIN streaming st ON st.id = ss.streaming_id
+            LEFT JOIN media m ON m.id = st.logo_image_id
+            WHERE ss.show_id IN ($placeholders)
             ORDER BY st.name";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($ids);
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $showId = (int) $row['showId'];
+            $showId = (int) $row['show_id'];
             if (! isset($showsById[$showId])) {
                 continue;
             }
 
             $streaming = new Streaming();
-            $streaming->id = (int) $row['id'];
-            $streaming->name = $row['name'] ?? '';
+            $streaming->setId((int) $row['id']);
+            $streaming->setName($row['name'] ?? '');
 
             if (! empty($row['logo_id'])) {
                 $logo = new Media();
-                $logo->id = (int) $row['logo_id'];
-                $logo->src = $row['logo_src'] ?? '';
-                $logo->alt = $row['logo_alt'] ?? '';
-                $streaming->logoImage = $logo;
+                $logo->setId((int) $row['logo_id']);
+                $logo->setSrc($row['logo_src'] ?? '');
+                $logo->setAlt($row['logo_alt'] ?? '');
+                $streaming->setLogoImage($logo);
             }
 
             $current = $showsById[$showId]->getStreamings();
@@ -457,7 +496,7 @@ class Show
             'id' => $this->getId(),
             'title' => $this->getTitle(),
             'description' => $this->getDescription(),
-            'type' => $this->getType(),
+            'type' => ['id' => $this->getType(), 'name' => $this->getType() == 1 ? 'Film' : 'Serial'],
             'productionDate' => $this->getProductionDate(),
             'numberOfEpisodes' => $this->getNumberOfEpisodes(),
             'coverImage' => $this->getCoverImage() ? $this->getCoverImage()->toArray() : null,
