@@ -107,7 +107,7 @@ if ($router->isPost()) {
 }
 ```
 
-**Type checking**: Use `($show->type ?? null) === 1` for "Film" 2 for "Serial"
+**Type checking**: Use `($show->type ?? null) === 1` for "Film" and 2 for "Serial"
 
 **Dynamic content**: Prepare mock data in route files (see `src/Routes/index.php` for examples) - real DB queries come later.
 
