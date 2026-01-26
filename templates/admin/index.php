@@ -6,29 +6,21 @@
         </div>
     </div>
     <div class="admin-page-content">
-        <form method="GET" action="/admin" class="admin-form">
-            <?php
-            $options = [
-                'show' => 'Filmy i seriale',
-                'category' => 'Kategorie',
-                'person' => 'Osoby',
-                'streaming' => 'Serwisy streamingowe'
-            ];
-            $selectedValue = $_GET['table'] ?? null;
-
-            render_component('select', [
-                'name' => 'table',
-                'options' => $options,
-                'value' => $selectedValue
-            ]);
-            ?>
-            <button type="submit" class="button">Wybierz</button>
-        </form>
-
-        <?php if (isset($table_content)): ?>
-            <div class="admin-table-container">
-                <?php echo $table_content; ?>
-            </div>
-        <?php endif; ?>
+        <a href="/admin/category" class="admin-box admin-box--purple">
+            <i class="fas fa-folder"></i>
+            <span>Zarządzaj kategoriami</span>
+        </a>
+        <a href="/admin/person" class="admin-box admin-box--blue">
+            <i class="fas fa-users"></i>
+            <span>Zarządzaj osobami</span>
+        </a>
+        <a href="/admin/show" class="admin-box admin-box--green">
+            <i class="fas fa-film"></i>
+            <span>Zarządzaj produkcjami</span>
+        </a>
+        <a href="/admin/streaming" class="admin-box admin-box--orange">
+            <i class="fas fa-play-circle"></i>
+            <span>Zarządzaj platformami streamingowymi</span>
+        </a>
     </div>
 </div>

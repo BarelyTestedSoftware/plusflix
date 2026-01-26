@@ -36,6 +36,6 @@ return [
         'data' => $showsData,
         'header' => 'Lista produkcji'
     ],
-    'title' => 'produkcje',
+    'title' => 'Produkcje',
     'bodyClass' => 'show-add',
 ];

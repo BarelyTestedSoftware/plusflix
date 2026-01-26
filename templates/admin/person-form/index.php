@@ -24,7 +24,7 @@ $typeValue = $person ? $person->getType() : '';
 				<label for="name" class="form-label">Imię i nazwisko</label>
 				<?php component('input-field', [
 					'name' => 'name',
-					'id' => 'name',
+					'id' => 'person_name',
 					'placeholder' => 'Wpisz imię i nazwisko',
 					'value' => $nameValue,
 					'required' => true,
@@ -35,8 +35,8 @@ $typeValue = $person ? $person->getType() : '';
 				<label for="type" class="form-label">Typ</label>
 				<?php component('select', [
 					'name' => 'type',
-					'id' => 'type',
-					'options' => [0 => 'Aktor', 1 => 'Reżyser'],
+					'id' => 'person_type',
+					'options' => [1 => 'Aktor', 2 => 'Reżyser'],
 					'value' => $typeValue,
 					'placeholder' => 'Wybierz typ',
 					'required' => true,
