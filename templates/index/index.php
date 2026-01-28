@@ -62,9 +62,6 @@ if ($highlightedShow) {
                 <a href="/show?id=<?= $highlightedShow->getId() ?>" class="btn-lg btn-primary-soft" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
                     <span style="font-size: 18px;">▶</span> Zobacz szczegóły
                 </a>
-                <a href="/rate" class="btn btn-ghost btn-lg" style="text-decoration: none;">
-                    Dodaj ocenę
-                </a>
             </div>
 
             <div class="slider-dots" id="slider-dots">
