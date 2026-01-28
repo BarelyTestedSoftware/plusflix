@@ -7,7 +7,7 @@ use App\Service\Config;
 class Rating
 {
     private ?int $id = null;
-    private ?int $value = null;
+    private ?float $value = null;
     private ?int $showId = null;
     private ?Show $show = null;
 
@@ -23,12 +23,12 @@ class Rating
         return $this;
     }
 
-    public function getValue(): ?int
+    public function getValue(): ?float
     {
         return $this->value;
     }
 
-    public function setValue(?int $value): Rating
+    public function setValue(?float $value): Rating
     {
         $this->value = $value;
 
@@ -73,7 +73,7 @@ class Rating
             $this->setId($array['id']);
         }
         if (isset($array['value'])) {
-            $this->setValue($array['value']);
+            $this->setValue($array['value'] !== null ? (float) $array['value'] : null);
         }
         if (isset($array['show_id'])) {
             $this->setShowId($array['show_id']);

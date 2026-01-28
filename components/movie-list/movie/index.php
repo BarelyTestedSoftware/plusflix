@@ -18,7 +18,7 @@ $numberOfEpisodes = $show->getNumberOfEpisodes();
     <div class="movie-info">
         <div class="movie-rating">
             <span class="star"><i class="fas fa-star"></i></span>
-            <span class="rating-value"><?= e($rating); ?></span>
+            <span class="rating-value"><?= e(number_format($rating, 1)); ?></span>
             <span class="rating-count">(<?= e($numberOfRatings); ?>)</span>
         </div>
         <h3 class="movie-title"><?= e($show->getTitle()); ?></h3>
