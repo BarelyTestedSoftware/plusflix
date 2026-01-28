@@ -32,7 +32,6 @@ if (method_exists($show, 'getDirector') && $show->getDirector()) {
 $streamings = method_exists($show, 'getStreamings') ? $show->getStreamings() : [];
 
 $categories = $show->getCategories();
-$firstCategoryName = !empty($categories) ? strtoupper($categories[0]->getName()) : 'GATUNEK';
 $director = method_exists($show, 'getDirector') ? $show->getDirector() : null;
 $actors = method_exists($show, 'getActors') ? $show->getActors() : [];
 ?>
@@ -70,13 +69,19 @@ $actors = method_exists($show, 'getActors') ? $show->getActors() : [];
                     <?php endif; ?>
                 </div>
 
-                <div class="movie-actions-row">
-                    <span class="badge-genre"><?= e($firstCategoryName) ?></span>
+                <?php component('rate', [
+                    'id' => $show->getId(),
+                    'averageRating' => $show->getRating(),
+                    'numberOfRatings' => $show->getNumberOfRatings()
+                ]); ?>
 
-                    <a href="/rate?id=<?= $show->getId() ?>" class="btn-rate">
-                        Dodaj ocenę
-                    </a>
-                </div>
+                <?php if (!empty($categories)): ?>
+                    <div class="movie-categories">
+                        <?php foreach ($categories as $category): ?>
+                            <span class="badge-genre"><?= e(strtoupper($category->getName())) ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
 
                 <?php if (!empty($streamings)): ?>
                     <div class="platforms-section">
