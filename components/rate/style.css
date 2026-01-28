@@ -1,32 +1,10 @@
 /* RATE PAGE */
 
-.rate-page-wrapper {
-    padding-top: 80px;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.page-title {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 30px;
-    color: #fff;
-}
-
-.rating-card {
-    background-color: #151725;
-    border-radius: 24px;
-    padding: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-}
-
-.rating-label {
-    font-size: 18px;
-    color: #fff;
-    font-weight: 600;
+.rate-component {
+    display: flex;
+    align-items: center;
+    gap: 15px;
     margin-bottom: 20px;
-    display: block;
 }
 
 .star-rating-widget {
@@ -34,7 +12,6 @@
     align-items: center;
     flex-direction: row-reverse;
     justify-content: flex-end;
-    margin-bottom: 40px;
 }
 
 .star-rating-widget input {
@@ -42,8 +19,8 @@
 }
 
 .star-rating-widget label {
-    width: 20px;
-    height: 40px;
+    width: 10px;
+    height: 20px;
     display: block;
     position: relative;
     cursor: pointer;
@@ -54,7 +31,7 @@
 
 .star-rating-widget label::before {
     content: '★';
-    font-size: 50px;
+    font-size: 25px;
     position: absolute;
     top: 0;
     line-height: 1;
@@ -67,7 +44,7 @@
 }
 
 .star-rating-widget label.half-right::before {
-    left: -20px;
+    left: -10px;
 }
 
 .star-rating-widget label.half-left {
@@ -82,7 +59,7 @@
 .star-rating-widget label:hover,
 .star-rating-widget label:hover ~ label,
 .star-rating-widget input:checked ~ label {
-    color: #6C5DD3;
+    color: #d3d15d;
 }
 
 .rating-counter {
@@ -91,6 +68,36 @@
     color: #fff;
     order: -1;
     margin-left: 20px;
+}
+
+.rating-stats {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    font-size: 16px;
+    color: #fff;
+}
+
+.rating-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.rating-separator {
+    font-size: 18px;
+    color: #666;
+}
+
+.rating-max {
+    font-size: 18px;
+    color: #999;
+}
+
+.rating-count {
+    margin-left: 8px;
+    font-size: 14px;
+    color: #999;
 }
 
 .rating-submit-btn {

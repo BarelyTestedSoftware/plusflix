@@ -81,6 +81,13 @@
     letter-spacing: 0.5px;
 }
 
+.movie-categories {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+
 .badge-genre {
     background: rgba(108, 93, 211, 0.2);
     color: #6C5DD3;
