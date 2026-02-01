@@ -79,6 +79,24 @@ if ($highlightedShow) {
     <div class="lists-wrapper">
 
         <?php
+        // Pobierz ulubione z ciasteczka
+        $favorites = isset($_COOKIE['plusflix_favorites']) ? json_decode(stripslashes($_COOKIE['plusflix_favorites']), true) : [];
+        $favorites = is_array($favorites) ? $favorites : [];
+
+        // Filtruj shows na podstawie ulubionych ID
+        $favoriteShows = array_filter($shows, function($show) use ($favorites) {
+            return in_array($show->getId(), $favorites);
+        });
+
+        // Wyświetl ulubione jeśli są
+        if (!empty($favoriteShows)):
+            ?>
+            <div class="movie-list-section">
+                <?php component('movie-list', ['shows' => $favoriteShows, "sectionTitle" => 'Ulubione']) ?>
+            </div>
+        <?php endif; ?>
+
+        <?php
         $targetCategories = [
                 'Sci-Fi i Fantasy' => 1,
                 'Komedie'          => 2,

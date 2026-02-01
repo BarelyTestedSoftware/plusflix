@@ -14,7 +14,7 @@ $numberOfEpisodes = $show->getNumberOfEpisodes();
 ?>
 
 <a href="/show?id=<?= $show->getId() ?>" class="movie" style="background-image: url('<?= e($coverImage?->getSrc()); ?>');">
-    <button class="movie-like" aria-label="Dodaj do ulubionych">♡</button>
+    <button class="movie-like" data-show-id="<?= $show->getId() ?>" aria-label="Dodaj do ulubionych">♡</button>
     <div class="movie-info">
         <div class="movie-rating">
             <span class="star"><i class="fas fa-star"></i></span>

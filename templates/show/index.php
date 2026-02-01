@@ -55,7 +55,10 @@ $actors = method_exists($show, 'getActors') ? $show->getActors() : [];
 
                 <span class="badge-category"><?= $typeLabel ?></span>
 
-                <h1 class="movie-title"><?= e($show->getTitle()) ?></h1>
+                <h1 class="movie-title">
+                    <?= e($show->getTitle()) ?>
+                    <button class="movie-like movie-like-large" data-show-id="<?= $show->getId() ?>" aria-label="Dodaj do ulubionych">♡</button>
+                </h1>
 
                 <div class="movie-meta">
                     <div class="meta-item">
